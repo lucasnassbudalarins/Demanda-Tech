@@ -3,12 +3,14 @@ package br.udesc.edu.demandatech.model.entity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.sql.Time;
 import java.time.LocalDate;
 
 @Entity
 @AllArgsConstructor
+@NoArgsConstructor
 @Data
 public class Demanda {
 
@@ -28,7 +30,7 @@ public class Demanda {
 
     @ManyToOne
     @Column(name = "id_tipo")
-    private Tipo idTipo;
+    private TipoDemanda idTipo;
 
     @ManyToOne
     @Column(name = "matricula_funcionario")

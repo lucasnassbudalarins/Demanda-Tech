@@ -5,24 +5,20 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.sql.Time;
-import java.time.LocalDate;
-
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class Departamento {
+public class TipoDemanda {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id_departamento")
-    private Long idDepartamento;
+    @Column(name = "id_tipo")
+    private Long idTipo;
 
     private String descricao;
 
-    @OneToOne
-    @Column(name = "matricula_funcionario_gerente")
-    private Funcionario matriculaFuncionarioGerente;
-
+    @ManyToOne
+    @Column(name = "id_departamento")
+    private Departamento idDepartamento;
 }
