@@ -5,15 +5,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.sql.Time;
-import java.time.LocalDate;
-
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 public class Departamento {
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id_departamento")
@@ -23,6 +19,6 @@ public class Departamento {
 
     @OneToOne
     @Column(name = "matricula_funcionario_gerente")
-    private Funcionario matriculaFuncionarioGerente;
+    private Funcionario gerente;
 
 }

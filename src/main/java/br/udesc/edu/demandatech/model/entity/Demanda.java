@@ -20,8 +20,8 @@ public class Demanda {
     private Long idDemanda;
 
     private String titulo;
-    private LocalDate date;
-    private Time time;
+    private LocalDate data;
+    private Time hora;
     private String descricao;
 
     @ManyToOne

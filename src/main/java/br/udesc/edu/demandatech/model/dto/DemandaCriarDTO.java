@@ -1,32 +1,28 @@
 package br.udesc.edu.demandatech.model.dto;
 
+import br.udesc.edu.demandatech.model.entity.Prioridade;
+import br.udesc.edu.demandatech.model.entity.TipoDemanda;
+import br.udesc.edu.demandatech.model.entity.Usuario;
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.sql.Time;
 import java.time.LocalDate;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class DemandaCriarDTO {
-    @NotEmpty(message = "Field name is empty")
-    @Size(max = 255, message = "Field name has more than 255 characters")
-    private String titulo;
-    @NotNull(message = "Field ranking is empty")
-    private LocalDate date;
-    @NotNull(message = "Field qtyCalories is empty")
-    private Time time;
-    @NotNull(message = "Field qtyGlucose is empty")
-    private String descricao;
-    @NotNull(message = "Field qtyProteins is empty")
-    private String descricaoPrioridade;
-    @NotEmpty(message = "Field url is empty")
-    private TipoDemanda tipoDemanda;
-
-
-}
+public record DemandaCriarDTO(
+    @NotEmpty(message = "Campo título está vazio")
+    @Size(max = 30, message = "Campo título tem mais de 30 caracteres")
+    String titulo,
+    @NotEmpty(message = "Campo data está vazio")
+    LocalDate data,
+    @NotEmpty(message = "Campo hora está vazio")
+    Time hora,
+    @Size(max = 250, message = "Campo descrição tem mais de 250 caracteres")
+    String descricao,
+    @NotEmpty(message = "Campo prioridade está vazio")
+    Prioridade prioridade,
+    @NotEmpty(message = "Campo tipo demanda está vazio")
+    TipoDemanda tipoDemanda,
+    @NotEmpty(message = "Campo usuario está vazio")
+    Usuario usuario)
+{ }
