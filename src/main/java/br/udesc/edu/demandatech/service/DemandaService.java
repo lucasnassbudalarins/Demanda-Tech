@@ -21,11 +21,11 @@ public class DemandaService {
     private DemandaRepository demandaRepository;
     private UsuarioEnvolvidoRepository usuarioEnvolvidoRepository;
 
-    public Demanda criarDemanda(DemandaCriarDTO demandaCriarDTO){
+    public Demanda criar(DemandaCriarDTO demandaCriarDTO){
         Demanda demanda = new Demanda();
         BeanUtils.copyProperties(demandaCriarDTO,demanda);
 
-//        Aidicionar Funcionário (regra de negócio)
+//        Adicionar Funcionário (regra de negócio)
 
         demanda = demandaRepository.save(demanda);
 
@@ -35,7 +35,7 @@ public class DemandaService {
         return demanda;
     }
 
-    public Demanda atualizarDemanda(Long id, DemandaEditarDTO demandaEditarDTO){
+    public Demanda atualizar(Long id, DemandaEditarDTO demandaEditarDTO){
         Optional<Demanda> optionalDemanda = demandaRepository.getDemandasByIdAndUsuario(id, demandaEditarDTO.usuario());
         if(optionalDemanda.isPresent()){
             Demanda demanda = optionalDemanda.get();
@@ -45,11 +45,11 @@ public class DemandaService {
         throw new IdNotFoud("demandas", id);
     }
 
-    public List<Demanda> buscarTodasDemandas(Usuario usuario){
+    public List<Demanda> buscarTudo(){
         return demandaRepository.findAll();
     }
 
-    public Demanda buscarDemandaPorId(Usuario usuario, Long id){
+    public Demanda buscarPorId(Long id){
         Optional<Demanda> optionalDemanda = demandaRepository.findById(id);
         if(optionalDemanda.isPresent()) {
             return optionalDemanda.get();
@@ -57,7 +57,7 @@ public class DemandaService {
         throw new IdNotFoud("demandas", id);
     }
 
-    public void removerDemandaPorId(Usuario usuario, Long id){
+    public void removerPorId(Usuario usuario, Long id){
         Optional<Demanda> optionalDemanda = demandaRepository.getDemandasByIdAndUsuario(id, usuario);
         if(optionalDemanda.isPresent()) {
             demandaRepository.deleteById(id);
