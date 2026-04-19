@@ -1,0 +1,67 @@
+package br.udesc.edu.demandatech.service;
+
+import br.udesc.edu.demandatech.model.dto.criar.StatusCriarDTO;
+import br.udesc.edu.demandatech.model.dto.editar.StatusEditarDTO;
+import br.udesc.edu.demandatech.model.entity.Funcionario;
+import br.udesc.edu.demandatech.model.entity.TipoDemanda;
+import br.udesc.edu.demandatech.model.exception.IdNotFound;
+import br.udesc.edu.demandatech.model.exception.PermissionDenied;
+import br.udesc.edu.demandatech.repository.TipoDemandaRepository;
+import lombok.AllArgsConstructor;
+import org.springframework.beans.BeanUtils;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
+
+@Service
+@AllArgsConstructor
+public class TipoDemandaService {
+    private TipoDemandaRepository tipoDemandaRepository;
+
+    public TipoDemanda criar(TipoDemandaCriarDTO tipoDemandaCriarDTO, Funcionario funcionario) {
+        if(!funcionario.getAdmin()) {
+            throw new PermissionDenied();
+        }
+        TipoDemanda tipoDemanda = new TipoDemanda();
+        BeanUtils.copyProperties(tipoDemandaCriarDTO,tipoDemanda);
+
+        return tipoDemanda = tipoDemandaRepository.save(tipoDemanda);
+    }
+
+    public TipoDemanda atualizar(Long id, TipoDemandaEditarDTO tipoDemandaEditarDTO, Funcionario funcionario) {
+        if(!funcionario.getAdmin()) {
+            throw new PermissionDenied();
+        }
+        Optional<TipoDemanda> opcionalTipoDemanda = tipoDemandaRepository.findById(id);
+        if(opcionalTipoDemanda.isPresent()) {
+            TipoDemanda tipoDemanda = opcionalTipoDemanda.get();
+            BeanUtils.copyProperties(tipoDemandaEditarDTO, tipoDemanda);
+            return tipoDemandaRepository.save(tipoDemanda);
+        }
+        throw new IdNotFound("tipo Demanda", id);
+    }
+
+    public List<TipoDemanda> buscarTudo() {
+        return tipoDemandaRepository.findAll();
+    }
+
+    public TipoDemanda buscarPorId(TipoDemanda tipoDemanda, Long id) {
+        Optional<TipoDemanda> opcionalTipoDemanda = tipoDemandaRepository.findById(id);
+        if(opcionalTipoDemanda.isPresent()) {
+            return opcionalTipoDemanda.get();
+        }
+        throw new IdNotFound("tipo Demanda", id);
+    }
+
+    public void removerPorId(Long id, Funcionario funcionario){
+        if(!funcionario.getAdmin()) {
+            throw new PermissionDenied();
+        }
+        Optional<TipoDemanda> opcionalTipoDemanda = tipoDemandaRepository.findById(id);
+        if(opcionalTipoDemanda.isPresent()) {
+            tipoDemandaRepository.deleteById(id);
+        }
+        throw new IdNotFound("tipo Demanda", id);
+    }
+}
