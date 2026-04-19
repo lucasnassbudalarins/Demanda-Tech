@@ -3,14 +3,17 @@ package br.udesc.edu.demandatech.service;
 import br.udesc.edu.demandatech.model.dto.criar.DemandaCriarDTO;
 import br.udesc.edu.demandatech.model.dto.editar.DemandaEditarDTO;
 import br.udesc.edu.demandatech.model.entity.Demanda;
+import br.udesc.edu.demandatech.model.entity.Funcionario;
 import br.udesc.edu.demandatech.model.entity.FuncionarioEnvolvido;
 import br.udesc.edu.demandatech.model.exception.IdNotFound;
+import br.udesc.edu.demandatech.model.exception.SemFuncionarioDisponivel;
 import br.udesc.edu.demandatech.repository.DemandaRepository;
-import br.udesc.edu.demandatech.repository.UsuarioEnvolvidoRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,24 +21,30 @@ import java.util.Optional;
 @AllArgsConstructor
 public class DemandaService {
     private DemandaRepository demandaRepository;
-    private UsuarioEnvolvidoRepository usuarioEnvolvidoRepository;
 
     public Demanda criar(DemandaCriarDTO demandaCriarDTO){
         Demanda demanda = new Demanda();
         BeanUtils.copyProperties(demandaCriarDTO,demanda);
 
-//        Adicionar Funcionário (regra de negócio)
+        Optional<Funcionario> responsavel = demandaRepository.findFuncionarioComMenosDemandas(
+                demandaCriarDTO.tipo().getDepartamento().getIdDepartamento()
+        );
+        if(responsavel.isEmpty()) throw new SemFuncionarioDisponivel();
+
+        demanda.setData(LocalDate.now());
+        demanda.setHora(LocalTime.now());
+        demanda.setResponsavel(responsavel.get());
 
         demanda = demandaRepository.save(demanda);
 
-        for (Usuario usuario : demandaCriarDTO.usuariosEnvolvidos())
-            new FuncionarioEnvolvido(usuario, demanda);
+        for (Funcionario funcionario : demandaCriarDTO.usuariosEnvolvidos())
+            new FuncionarioEnvolvido(funcionario, demanda);
 
         return demanda;
     }
 
     public Demanda atualizar(Long id, DemandaEditarDTO demandaEditarDTO){
-        Optional<Demanda> optionalDemanda = demandaRepository.getDemandasByIdAndUsuario(id, demandaEditarDTO.usuario());
+        Optional<Demanda> optionalDemanda = demandaRepository.getDemandasByIdAndUsuario(id, demandaEditarDTO.criador());
         if(optionalDemanda.isPresent()){
             Demanda demanda = optionalDemanda.get();
             BeanUtils.copyProperties(demandaEditarDTO,demanda);
@@ -56,8 +65,8 @@ public class DemandaService {
         throw new IdNotFound("demandas", id);
     }
 
-    public void removerPorId(Usuario usuario, Long id){
-        Optional<Demanda> optionalDemanda = demandaRepository.getDemandasByIdAndUsuario(id, usuario);
+    public void removerPorId(Funcionario funcionario, Long id){
+        Optional<Demanda> optionalDemanda = demandaRepository.getDemandasByIdAndUsuario(id, funcionario);
         if(optionalDemanda.isPresent()) {
             demandaRepository.deleteById(id);
         }

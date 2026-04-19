@@ -2,8 +2,10 @@ package br.udesc.edu.demandatech.service;
 
 import br.udesc.edu.demandatech.model.dto.criar.FuncionarioCriarDTO;
 import br.udesc.edu.demandatech.model.dto.editar.FuncionarioEditarDTO;
+import br.udesc.edu.demandatech.model.entity.Departamento;
 import br.udesc.edu.demandatech.model.entity.Funcionario;
 import br.udesc.edu.demandatech.model.exception.IdNotFound;
+import br.udesc.edu.demandatech.model.exception.PermissionDenied;
 import br.udesc.edu.demandatech.repository.FuncionarioRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
@@ -16,22 +18,27 @@ import java.util.Optional;
 @AllArgsConstructor
 public class FuncionarioService {
     private FuncionarioRepository funcionarioRepository;
-    private UsuarioRepository usuarioRepository;
 
-    public Funcionario criar(FuncionarioCriarDTO funcionarioCriarDTO, Usuario usuario){
-        Funcionario funcionario = new Funcionario();
-        BeanUtils.copyProperties(funcionarioCriarDTO,funcionario);
-        return funcionarioRepository.save(funcionario);
+    public Funcionario criar(FuncionarioCriarDTO funcionarioCriarDTO, Funcionario funcionario) {
+        if(!funcionario.getAdmin()) {
+            throw new PermissionDenied();
+        }
+        Funcionario novoFuncionario = new Funcionario();
+        BeanUtils.copyProperties(funcionarioCriarDTO,novoFuncionario);
+        return funcionarioRepository.save(novoFuncionario);
     }
 
-    public Funcionario atualizar(Long id, FuncionarioEditarDTO funcionarioEditarDTO, Usuario usuario){
+    public Funcionario atualizar(Long id, FuncionarioEditarDTO funcionarioEditarDTO, Funcionario funcionario){
+        if(!funcionario.getAdmin()) {
+            throw new PermissionDenied();
+        }
         Optional<Funcionario> optionalFuncionario = funcionarioRepository.findById(id);
         if(optionalFuncionario.isPresent()){
-            Funcionario funcionario = optionalFuncionario.get();
-            BeanUtils.copyProperties(funcionarioEditarDTO,funcionario);
-            return funcionarioRepository.save(funcionario);
+            Funcionario atualizarFuncionario = optionalFuncionario.get();
+            BeanUtils.copyProperties(funcionarioEditarDTO,atualizarFuncionario);
+            return funcionarioRepository.save(atualizarFuncionario);
         }
-        throw new IdNotFound("funcionario", id);
+        throw new IdNotFound("funcionário", id);
     }
 
     public List<Funcionario> buscarTudo(){
@@ -43,15 +50,18 @@ public class FuncionarioService {
         if(optionalFuncionario.isPresent()) {
             return optionalFuncionario.get();
         }
-        throw new IdNotFound("funcionario", id);
+        throw new IdNotFound("funcionário", id);
     }
 
-    public void removerPorId(Usuario usuario, Long id){
-
+    public void removerPorId(Long id, Funcionario funcionario){
+        if(!funcionario.getAdmin()) {
+            throw new PermissionDenied();
+        }
         Optional<Funcionario> optionalFuncionario = funcionarioRepository.findById(id);
         if(optionalFuncionario.isPresent()) {
             funcionarioRepository.deleteById(id);
         }
-        throw new IdNotFound("funcionario", id);
+        throw new IdNotFound("funcionário", id);
     }
+
 }

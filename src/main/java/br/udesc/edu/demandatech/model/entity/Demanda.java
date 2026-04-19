@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.sql.Time;
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Entity
 @AllArgsConstructor
@@ -21,7 +22,7 @@ public class Demanda {
 
     private String titulo;
     private LocalDate data;
-    private Time hora;
+    private LocalTime hora;
     private String descricao;
 
     @ManyToOne

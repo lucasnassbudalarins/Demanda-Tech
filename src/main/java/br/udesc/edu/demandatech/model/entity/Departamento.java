@@ -23,4 +23,8 @@ public class Departamento {
     @JoinColumn(name = "gerente")
     private Funcionario gerente;
 
+    @ManyToOne
+    @Column(name = "responsavel")
+    private Funcionario responsavel;
+
 }

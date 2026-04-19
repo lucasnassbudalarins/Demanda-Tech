@@ -17,5 +17,7 @@ public record DemandaEditarDTO(
     @Size(max = 250, message = "Campo descrição tem mais de 250 caracteres")
     String descricao,
     Prioridade prioridade,
-    TipoDemanda tipo)
+    TipoDemanda tipo,
+    Funcionario criador
+)
 { }
