@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@Table(name = "tipos_de_demanda")
 public class TipoDemanda {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

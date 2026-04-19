@@ -20,6 +20,9 @@ public class Demanda {
     @Column(name = "id_demanda")
     private Long idDemanda;
 
+    @Column(name = "id_status")
+    private Long status;
+
     private String titulo;
     private LocalDate data;
     private LocalTime hora;
@@ -34,10 +37,10 @@ public class Demanda {
     private TipoDemanda tipo;
 
     @ManyToOne
-    @JoinColumn(name = "matricula_funcionario")
+    @JoinColumn(name = "criador")
     private Funcionario criador;
 
     @ManyToOne
-    @JoinColumn(name = "matricula_funcionario")
+    @JoinColumn(name = "responsavel")
     private Funcionario responsavel;
 }

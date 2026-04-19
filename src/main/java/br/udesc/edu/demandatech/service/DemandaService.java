@@ -73,4 +73,11 @@ public class DemandaService {
         throw new IdNaoEncontrado("demandas", id);
     }
 
+    public String relatorioQtdDemandasPorDepartamento(){
+
+        return """ 
+                TE AMO
+        """;
+    }
+
 }
