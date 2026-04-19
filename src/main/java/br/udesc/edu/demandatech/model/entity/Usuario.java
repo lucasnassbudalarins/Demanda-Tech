@@ -19,7 +19,4 @@ public class Usuario {
     private String nome;
     private String email;
 
-    @ManyToOne
-    @JoinColumn(name = "id_empresa")
-    private Empresa idEmpresa;
 }

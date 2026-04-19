@@ -1,9 +1,13 @@
 package br.udesc.edu.demandatech.service;
 
-import br.udesc.edu.demandatech.model.dto.DemandaCriarDTO;
+import br.udesc.edu.demandatech.model.dto.criar.DemandaCriarDTO;
+import br.udesc.edu.demandatech.model.dto.editar.DemandaEditarDTO;
 import br.udesc.edu.demandatech.model.entity.Demanda;
+import br.udesc.edu.demandatech.model.entity.Usuario;
+import br.udesc.edu.demandatech.model.entity.UsuarioEnvolvido;
 import br.udesc.edu.demandatech.model.exception.IdNotFoud;
 import br.udesc.edu.demandatech.repository.DemandaRepository;
+import br.udesc.edu.demandatech.repository.UsuarioEnvolvidoRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -15,39 +19,50 @@ import java.util.Optional;
 @AllArgsConstructor
 public class DemandaService {
     private DemandaRepository demandaRepository;
+    private UsuarioEnvolvidoRepository usuarioEnvolvidoRepository;
 
     public Demanda criarDemanda(DemandaCriarDTO demandaCriarDTO){
         Demanda demanda = new Demanda();
         BeanUtils.copyProperties(demandaCriarDTO,demanda);
-//      Adicionar na tabela associativa Demanda Pessoas
-//        Adicionar Prioridades
-//        Adicionar Tipo
-//        Adicionar usuário
+
 //        Aidicionar Funcionário (regra de negócio)
 
-        return demandaRepository.save(demanda);
+        demanda = demandaRepository.save(demanda);
+
+        for (Usuario usuario : demandaCriarDTO.usuariosEnvolvidos())
+            new UsuarioEnvolvido(usuario, demanda);
+
+        return demanda;
     }
 
-    public Demanda atualizarDemanda(Long id, DemandaCriarDTO demandaCriarDTO){
-        Optional<Demanda> optionalDemanda = demandaRepository.findById(id);
+    public Demanda atualizarDemanda(Long id, DemandaEditarDTO demandaEditarDTO){
+        Optional<Demanda> optionalDemanda = demandaRepository.getDemandasByIdAndUsuario(id, demandaEditarDTO.usuario());
         if(optionalDemanda.isPresent()){
             Demanda demanda = optionalDemanda.get();
-            BeanUtils.copyProperties(demandaCriarDTO,demanda);
+            BeanUtils.copyProperties(demandaEditarDTO,demanda);
             return demandaRepository.save(demanda);
         }
         throw new IdNotFoud("demandas", id);
     }
 
-    public List<Demanda> buscarTodasDemandas(){
+    public List<Demanda> buscarTodasDemandas(Usuario usuario){
         return demandaRepository.findAll();
     }
 
-    public Optional<Demanda> buscarDemandaPorId(Long id){
-        return demandaRepository.findById(id);
+    public Demanda buscarDemandaPorId(Usuario usuario, Long id){
+        Optional<Demanda> optionalDemanda = demandaRepository.findById(id);
+        if(optionalDemanda.isPresent()) {
+            return optionalDemanda.get();
+        }
+        throw new IdNotFoud("demandas", id);
     }
 
-    public void removerDemandaPorId(Long id){
-        demandaRepository.deleteById(id);
+    public void removerDemandaPorId(Usuario usuario, Long id){
+        Optional<Demanda> optionalDemanda = demandaRepository.getDemandasByIdAndUsuario(id, usuario);
+        if(optionalDemanda.isPresent()) {
+            demandaRepository.deleteById(id);
+        }
+        throw new IdNotFoud("demandas", id);
     }
 
 }

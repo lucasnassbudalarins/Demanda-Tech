@@ -26,17 +26,17 @@ public class Demanda {
 
     @ManyToOne
     @JoinColumn(name = "id_prioridade")
-    private Prioridade idPrioridade;
+    private Prioridade prioridade;
 
     @ManyToOne
     @JoinColumn(name = "id_tipo")
-    private TipoDemanda idTipo;
+    private TipoDemanda tipo;
 
     @ManyToOne
     @JoinColumn(name = "matricula_funcionario")
-    private Funcionario matriculaFuncionario;
+    private Funcionario funcionario;
 
     @ManyToOne
     @JoinColumn(name = "id_usuario")
-    private Usuario idusuario;
+    private Usuario usuario;
 }

@@ -1,7 +1,5 @@
-package br.udesc.edu.demandatech.model.dto;
+package br.udesc.edu.demandatech.model.dto.criar;
 
-import br.udesc.edu.demandatech.model.entity.Departamento;
-import br.udesc.edu.demandatech.model.entity.Empresa;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
@@ -12,7 +10,6 @@ public record UsuarioCriarDTO(
     String nome,
     @NotEmpty(message = "Campo email está vazio")
     @Email
-    String email,
-    Empresa idEmpresa
+    String email
 )
 { }

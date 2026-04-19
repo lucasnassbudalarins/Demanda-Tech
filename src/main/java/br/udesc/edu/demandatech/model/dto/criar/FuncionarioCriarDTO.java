@@ -1,4 +1,4 @@
-package br.udesc.edu.demandatech.model.dto;
+package br.udesc.edu.demandatech.model.dto.criar;
 
 import br.udesc.edu.demandatech.model.entity.Departamento;
 import jakarta.validation.constraints.Email;
@@ -12,6 +12,6 @@ public record FuncionarioCriarDTO(
     @NotEmpty(message = "Campo email está vazio")
     @Email
     String email,
-    Departamento idDepartamento
+    Departamento departamento
 )
 { }
