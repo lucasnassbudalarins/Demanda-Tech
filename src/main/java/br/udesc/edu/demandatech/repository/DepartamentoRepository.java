@@ -11,4 +11,5 @@ import java.util.Optional;
 @Repository
 public interface DepartamentoRepository extends JpaRepository<Departamento, Long> {
 
+    Departamento getDepartamentoByDescricao(String descricao);
 }

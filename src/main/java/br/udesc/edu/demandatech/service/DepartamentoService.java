@@ -5,6 +5,7 @@ import br.udesc.edu.demandatech.model.dto.editar.DepartamentoEditarDTO;
 import br.udesc.edu.demandatech.model.entity.Departamento;
 import br.udesc.edu.demandatech.model.entity.Funcionario;
 import br.udesc.edu.demandatech.model.exception.IdNaoEncontrado;
+import br.udesc.edu.demandatech.model.exception.ItemNaoEncontrado;
 import br.udesc.edu.demandatech.model.exception.PermissaoNegada;
 import br.udesc.edu.demandatech.repository.DepartamentoRepository;
 import lombok.AllArgsConstructor;
@@ -55,11 +56,11 @@ public class DepartamentoService {
     }
 
     public Departamento buscarPorName(String descricao) {
-        Optional<Departamento> opcionalDepartamento = departamentoRepository.getDepartamentoByDescricao(descricao);
-        if(opcionalDepartamento.isPresent()) {
-            return opcionalDepartamento.get();
+        Departamento departamento = departamentoRepository.getDepartamentoByDescricao(descricao);
+        if(departamento != null) {
+            return departamento;
         }
-        throw new IdNaoEncontrado("departamento", id);
+        throw new ItemNaoEncontrado(descricao);
     }
 
     public void removerPorId(Long id, Funcionario funcionario) {
