@@ -8,7 +8,6 @@ public record FuncionarioEditarDTO(
     @Size(max = 100, message = "Campo nome tem mais de 100 caracteres")
     String nome,
     @Email
-    String email,
-    Departamento departamento
+    String email
 )
 { }

@@ -17,8 +17,11 @@ public class Funcionario {
 
     private String nome;
     private String email;
+    private Boolean admin;
 
     @ManyToOne
     @Column(name = "id_departamento")
-    private Departamento idDepartamento;
+    private Departamento departamento;
+
+
 }

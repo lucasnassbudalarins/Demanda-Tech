@@ -3,7 +3,6 @@ package br.udesc.edu.demandatech.service;
 import br.udesc.edu.demandatech.model.dto.criar.DepartamentoCriarDTO;
 import br.udesc.edu.demandatech.model.dto.editar.DepartamentoEditarDTO;
 import br.udesc.edu.demandatech.model.entity.Departamento;
-import br.udesc.edu.demandatech.model.entity.Usuario;
 import br.udesc.edu.demandatech.model.exception.IdNotFound;
 import br.udesc.edu.demandatech.repository.DepartamentoRepository;
 import lombok.AllArgsConstructor;

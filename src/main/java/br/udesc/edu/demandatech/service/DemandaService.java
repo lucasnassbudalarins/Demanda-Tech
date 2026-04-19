@@ -3,8 +3,7 @@ package br.udesc.edu.demandatech.service;
 import br.udesc.edu.demandatech.model.dto.criar.DemandaCriarDTO;
 import br.udesc.edu.demandatech.model.dto.editar.DemandaEditarDTO;
 import br.udesc.edu.demandatech.model.entity.Demanda;
-import br.udesc.edu.demandatech.model.entity.Usuario;
-import br.udesc.edu.demandatech.model.entity.UsuarioEnvolvido;
+import br.udesc.edu.demandatech.model.entity.FuncionarioEnvolvido;
 import br.udesc.edu.demandatech.model.exception.IdNotFound;
 import br.udesc.edu.demandatech.repository.DemandaRepository;
 import br.udesc.edu.demandatech.repository.UsuarioEnvolvidoRepository;
@@ -30,7 +29,7 @@ public class DemandaService {
         demanda = demandaRepository.save(demanda);
 
         for (Usuario usuario : demandaCriarDTO.usuariosEnvolvidos())
-            new UsuarioEnvolvido(usuario, demanda);
+            new FuncionarioEnvolvido(usuario, demanda);
 
         return demanda;
     }

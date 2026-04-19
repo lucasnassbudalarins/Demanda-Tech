@@ -19,9 +19,9 @@ public class EstornoDemanda {
     private Long idEstorno;
 
     private String descricao;
-    private LocalDate date;
+    private LocalDate data;
 
     @ManyToOne
     @JoinColumn(name = "id_demanda")
-    private Demanda idDemanda;
+    private Demanda demanda;
 }

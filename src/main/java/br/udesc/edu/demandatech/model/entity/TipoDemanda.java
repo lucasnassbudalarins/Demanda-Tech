@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 public class TipoDemanda {
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id_tipo")
@@ -20,5 +19,5 @@ public class TipoDemanda {
 
     @ManyToOne
     @JoinColumn(name = "id_departamento")
-    private Departamento idDepartamento;
+    private Departamento departamento;
 }

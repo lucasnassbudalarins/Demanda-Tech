@@ -12,15 +12,15 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class UsuarioEnvolvido {
+public class FuncionarioEnvolvido {
 
     @Id
     @ManyToOne
-    @JoinColumn(name = "id_usuario")
-    private Usuario idUsuario;
+    @JoinColumn(name = "matricula_usuario")
+    private Funcionario funcionario;
     @Id
     @ManyToOne
     @JoinColumn(name = "id_demanda")
-    private Demanda idDemanda;
+    private Demanda demanda;
 
 }

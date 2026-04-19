@@ -34,9 +34,9 @@ public class Demanda {
 
     @ManyToOne
     @JoinColumn(name = "matricula_funcionario")
-    private Funcionario funcionario;
+    private Funcionario criador;
 
     @ManyToOne
-    @JoinColumn(name = "id_usuario")
-    private Usuario usuario;
+    @JoinColumn(name = "matricula_funcionario")
+    private Funcionario responsavel;
 }
