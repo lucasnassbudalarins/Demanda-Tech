@@ -1,7 +1,7 @@
 package br.udesc.edu.demandatech.model.exception;
 
-public class PermissionDenied extends RuntimeException {
-    public PermissionDenied() {
+public class PermissaoNegada extends RuntimeException {
+    public PermissaoNegada() {
         super("Usuário não tem permissão para realizar essa ação");
     }
 }

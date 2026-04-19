@@ -4,8 +4,8 @@ import br.udesc.edu.demandatech.model.dto.criar.StatusCriarDTO;
 import br.udesc.edu.demandatech.model.dto.editar.StatusEditarDTO;
 import br.udesc.edu.demandatech.model.entity.Funcionario;
 import br.udesc.edu.demandatech.model.entity.Status;
-import br.udesc.edu.demandatech.model.exception.IdNotFound;
-import br.udesc.edu.demandatech.model.exception.PermissionDenied;
+import br.udesc.edu.demandatech.model.exception.IdNaoEncontrado;
+import br.udesc.edu.demandatech.model.exception.PermissaoNegada;
 import br.udesc.edu.demandatech.repository.StatusRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
@@ -21,7 +21,7 @@ public class StatusService {
 
     public Status criar(StatusCriarDTO statusCriarDTO, Funcionario funcionario) {
         if(!funcionario.getAdmin()) {
-            throw new PermissionDenied();
+            throw new PermissaoNegada();
         }
         Status status = new Status();
         BeanUtils.copyProperties(statusCriarDTO,status);
@@ -31,7 +31,7 @@ public class StatusService {
 
     public Status atualizar(Long id, StatusEditarDTO statusEditarDTO, Funcionario funcionario) {
         if(!funcionario.getAdmin()) {
-            throw new PermissionDenied();
+            throw new PermissaoNegada();
         }
         Optional<Status> opcionalStatus = statusRepository.findById(id);
         if(opcionalStatus.isPresent()) {
@@ -39,7 +39,7 @@ public class StatusService {
             BeanUtils.copyProperties(statusEditarDTO, status);
             return statusRepository.save(status);
         }
-        throw new IdNotFound("status", id);
+        throw new IdNaoEncontrado("status", id);
     }
 
     public List<Status> buscarTudo() {
@@ -51,17 +51,17 @@ public class StatusService {
         if(opcionalStatus.isPresent()) {
             return opcionalStatus.get();
         }
-        throw new IdNotFound("status", id);
+        throw new IdNaoEncontrado("status", id);
     }
 
     public void removerPorId(Long id, Funcionario funcionario){
         if(!funcionario.getAdmin()) {
-            throw new PermissionDenied();
+            throw new PermissaoNegada();
         }
         Optional<Status> optionalStatus = statusRepository.findById(id);
         if(optionalStatus.isPresent()) {
             statusRepository.deleteById(id);
         }
-        throw new IdNotFound("status", id);
+        throw new IdNaoEncontrado("status", id);
     }
 }

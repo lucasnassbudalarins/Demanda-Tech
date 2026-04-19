@@ -4,8 +4,8 @@ import br.udesc.edu.demandatech.model.dto.criar.DepartamentoCriarDTO;
 import br.udesc.edu.demandatech.model.dto.editar.DepartamentoEditarDTO;
 import br.udesc.edu.demandatech.model.entity.Departamento;
 import br.udesc.edu.demandatech.model.entity.Funcionario;
-import br.udesc.edu.demandatech.model.exception.IdNotFound;
-import br.udesc.edu.demandatech.model.exception.PermissionDenied;
+import br.udesc.edu.demandatech.model.exception.IdNaoEncontrado;
+import br.udesc.edu.demandatech.model.exception.PermissaoNegada;
 import br.udesc.edu.demandatech.repository.DepartamentoRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
@@ -21,7 +21,7 @@ public class DepartamentoService {
 
     public Departamento criar(DepartamentoCriarDTO departamentoCriarDTO, Funcionario funcionario) {
         if(!funcionario.getAdmin()) {
-            throw new PermissionDenied();
+            throw new PermissaoNegada();
         }
         Departamento departamento = new Departamento();
         BeanUtils.copyProperties(departamentoCriarDTO,departamento);
@@ -31,7 +31,7 @@ public class DepartamentoService {
 
     public Departamento atualizar(Long id, DepartamentoEditarDTO departamentoEditarDTO, Funcionario funcionario) {
         if(!funcionario.getAdmin()) {
-            throw new PermissionDenied();
+            throw new PermissaoNegada();
         }
         Optional<Departamento> opcionalDepartamento = departamentoRepository.findById(id);
         if(opcionalDepartamento.isPresent()) {
@@ -39,7 +39,7 @@ public class DepartamentoService {
             BeanUtils.copyProperties(departamentoEditarDTO, departamento);
             return departamentoRepository.save(departamento);
         }
-        throw new IdNotFound("departamento", id);
+        throw new IdNaoEncontrado("departamento", id);
     }
 
     public List<Departamento> buscarTudo() {
@@ -51,7 +51,7 @@ public class DepartamentoService {
         if(opcionalDepartamento.isPresent()) {
             return opcionalDepartamento.get();
         }
-        throw new IdNotFound("departamento", id);
+        throw new IdNaoEncontrado("departamento", id);
     }
 
     public Departamento buscarPorName(String descricao) {
@@ -59,17 +59,17 @@ public class DepartamentoService {
         if(opcionalDepartamento.isPresent()) {
             return opcionalDepartamento.get();
         }
-        throw new IdNotFound("departamento", id);
+        throw new IdNaoEncontrado("departamento", id);
     }
 
     public void removerPorId(Long id, Funcionario funcionario) {
         if(!funcionario.getAdmin()) {
-            throw new PermissionDenied();
+            throw new PermissaoNegada();
         }
         Optional<Departamento> optionalDepartamento = departamentoRepository.findById(id);
         if(optionalDepartamento.isPresent()) {
             departamentoRepository.deleteById(id);
         }
-        throw new IdNotFound("departamento", id);
+        throw new IdNaoEncontrado("departamento", id);
     }
 }

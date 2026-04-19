@@ -4,8 +4,8 @@ import br.udesc.edu.demandatech.model.dto.criar.PrioridadeCriarDTO;
 import br.udesc.edu.demandatech.model.dto.editar.PrioridadeEditarDTO;
 import br.udesc.edu.demandatech.model.entity.Funcionario;
 import br.udesc.edu.demandatech.model.entity.Prioridade;
-import br.udesc.edu.demandatech.model.exception.IdNotFound;
-import br.udesc.edu.demandatech.model.exception.PermissionDenied;
+import br.udesc.edu.demandatech.model.exception.IdNaoEncontrado;
+import br.udesc.edu.demandatech.model.exception.PermissaoNegada;
 import br.udesc.edu.demandatech.repository.PrioridadeRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
@@ -21,7 +21,7 @@ public class PrioridadeService {
 
     public Prioridade criar(PrioridadeCriarDTO prioridadeCriarDTO, Funcionario funcionario) {
         if(!funcionario.getAdmin()) {
-            throw new PermissionDenied();
+            throw new PermissaoNegada();
         }
         Prioridade prioridade = new Prioridade();
         BeanUtils.copyProperties(prioridadeCriarDTO,prioridade);
@@ -31,7 +31,7 @@ public class PrioridadeService {
 
     public Prioridade atualizar(Long id, PrioridadeEditarDTO prioridadeEditarDTO, Funcionario funcionario) {
         if(!funcionario.getAdmin()) {
-            throw new PermissionDenied();
+            throw new PermissaoNegada();
         }
         Optional<Prioridade> opcionalPrioridade = prioridadeRepository.findById(id);
         if(opcionalPrioridade.isPresent()) {
@@ -39,7 +39,7 @@ public class PrioridadeService {
             BeanUtils.copyProperties(prioridadeEditarDTO, prioridade);
             return prioridadeRepository.save(prioridade);
         }
-        throw new IdNotFound("prioridade", id);
+        throw new IdNaoEncontrado("prioridade", id);
     }
 
     public List<Prioridade> buscarTudo() {
@@ -51,17 +51,17 @@ public class PrioridadeService {
         if(opcionalPrioridade.isPresent()) {
             return opcionalPrioridade.get();
         }
-        throw new IdNotFound("prioridade", id);
+        throw new IdNaoEncontrado("prioridade", id);
     }
 
     public void removerPorId(Long id, Funcionario funcionario){
         if(!funcionario.getAdmin()) {
-            throw new PermissionDenied();
+            throw new PermissaoNegada();
         }
         Optional<Prioridade> optionalPrioridade = prioridadeRepository.findById(id);
         if(optionalPrioridade.isPresent()) {
             prioridadeRepository.deleteById(id);
         }
-        throw new IdNotFound("prioridade", id);
+        throw new IdNaoEncontrado("prioridade", id);
     }
 }

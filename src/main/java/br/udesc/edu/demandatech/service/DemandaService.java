@@ -5,7 +5,7 @@ import br.udesc.edu.demandatech.model.dto.editar.DemandaEditarDTO;
 import br.udesc.edu.demandatech.model.entity.Demanda;
 import br.udesc.edu.demandatech.model.entity.Funcionario;
 import br.udesc.edu.demandatech.model.entity.FuncionarioEnvolvido;
-import br.udesc.edu.demandatech.model.exception.IdNotFound;
+import br.udesc.edu.demandatech.model.exception.IdNaoEncontrado;
 import br.udesc.edu.demandatech.model.exception.SemFuncionarioDisponivel;
 import br.udesc.edu.demandatech.repository.DemandaRepository;
 import lombok.AllArgsConstructor;
@@ -50,7 +50,7 @@ public class DemandaService {
             BeanUtils.copyProperties(demandaEditarDTO,demanda);
             return demandaRepository.save(demanda);
         }
-        throw new IdNotFound("demandas", id);
+        throw new IdNaoEncontrado("demandas", id);
     }
 
     public List<Demanda> buscarTudo(){
@@ -62,7 +62,7 @@ public class DemandaService {
         if(optionalDemanda.isPresent()) {
             return optionalDemanda.get();
         }
-        throw new IdNotFound("demandas", id);
+        throw new IdNaoEncontrado("demandas", id);
     }
 
     public void removerPorId(Funcionario funcionario, Long id){
@@ -70,7 +70,7 @@ public class DemandaService {
         if(optionalDemanda.isPresent()) {
             demandaRepository.deleteById(id);
         }
-        throw new IdNotFound("demandas", id);
+        throw new IdNaoEncontrado("demandas", id);
     }
 
 }
