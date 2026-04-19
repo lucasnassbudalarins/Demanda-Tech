@@ -49,7 +49,8 @@ public class FuncionarioService {
     }
 
     public void removerPorId(Usuario usuario, Long id){
-        Optional<Funcionario> optionalFuncionario = funcionarioRepository.findById(id, usuario);
+
+        Optional<Funcionario> optionalFuncionario = funcionarioRepository.findById(id);
         if(optionalFuncionario.isPresent()) {
             funcionarioRepository.deleteById(id);
         }
