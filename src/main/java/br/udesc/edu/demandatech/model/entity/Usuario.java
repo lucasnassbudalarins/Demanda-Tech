@@ -20,6 +20,6 @@ public class Usuario {
     private String email;
 
     @ManyToOne
-    @Column(name = "id_empresa")
+    @JoinColumn(name = "id_empresa")
     private Empresa idEmpresa;
 }

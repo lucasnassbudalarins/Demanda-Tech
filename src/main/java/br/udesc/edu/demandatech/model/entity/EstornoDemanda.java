@@ -22,6 +22,6 @@ public class EstornoDemanda {
     private LocalDate date;
 
     @ManyToOne
-    @Column(name = "id_demanda")
+    @JoinColumn(name = "id_demanda")
     private Demanda idDemanda;
 }

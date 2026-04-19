@@ -18,7 +18,7 @@ public class Departamento {
     private String descricao;
 
     @OneToOne
-    @Column(name = "matricula_funcionario_gerente")
+    @JoinColumn(name = "matricula_funcionario_gerente")
     private Funcionario gerente;
 
 }

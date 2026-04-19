@@ -1,9 +1,6 @@
 package br.udesc.edu.demandatech.model.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,11 +13,11 @@ public class UsuarioEnvolvido {
 
     @Id
     @ManyToOne
-    @Column(name = "id_usuario")
+    @JoinColumn(name = "id_usuario")
     private Usuario idUsuario;
     @Id
     @ManyToOne
-    @Column(name = "id_demanda")
+    @JoinColumn(name = "id_demanda")
     private Demanda idDemanda;
 
 }

@@ -25,18 +25,18 @@ public class Demanda {
     private String descricao;
 
     @ManyToOne
-    @Column(name = "id_prioridade")
+    @JoinColumn(name = "id_prioridade")
     private Prioridade idPrioridade;
 
     @ManyToOne
-    @Column(name = "id_tipo")
+    @JoinColumn(name = "id_tipo")
     private TipoDemanda idTipo;
 
     @ManyToOne
-    @Column(name = "matricula_funcionario")
+    @JoinColumn(name = "matricula_funcionario")
     private Funcionario matriculaFuncionario;
 
     @ManyToOne
-    @Column(name = "id_usuario")
+    @JoinColumn(name = "id_usuario")
     private Usuario idusuario;
 }

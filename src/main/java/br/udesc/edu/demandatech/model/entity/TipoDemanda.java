@@ -19,6 +19,6 @@ public class TipoDemanda {
     private String descricao;
 
     @ManyToOne
-    @Column(name = "id_departamento")
+    @JoinColumn(name = "id_departamento")
     private Departamento idDepartamento;
 }
