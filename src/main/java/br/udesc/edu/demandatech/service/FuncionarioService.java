@@ -6,6 +6,7 @@ import br.udesc.edu.demandatech.model.entity.Funcionario;
 import br.udesc.edu.demandatech.model.entity.Usuario;
 import br.udesc.edu.demandatech.model.exception.IdNotFound;
 import br.udesc.edu.demandatech.repository.FuncionarioRepository;
+import br.udesc.edu.demandatech.repository.UsuarioRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -17,14 +18,15 @@ import java.util.Optional;
 @AllArgsConstructor
 public class FuncionarioService {
     private FuncionarioRepository funcionarioRepository;
+    private UsuarioRepository usuarioRepository;
 
-    public Funcionario criarDemanda(FuncionarioCriarDTO funcionarioCriarDTO){
+    public Funcionario criar(FuncionarioCriarDTO funcionarioCriarDTO, Usuario usuario){
         Funcionario funcionario = new Funcionario();
         BeanUtils.copyProperties(funcionarioCriarDTO,funcionario);
         return funcionarioRepository.save(funcionario);
     }
 
-    public Funcionario atualizarDemanda(Long id, FuncionarioEditarDTO funcionarioEditarDTO){
+    public Funcionario atualizar(Long id, FuncionarioEditarDTO funcionarioEditarDTO, Usuario usuario){
         Optional<Funcionario> optionalFuncionario = funcionarioRepository.findById(id);
         if(optionalFuncionario.isPresent()){
             Funcionario funcionario = optionalFuncionario.get();
@@ -34,26 +36,23 @@ public class FuncionarioService {
         throw new IdNotFound("funcionario", id);
     }
 
-    public List<Funcionario> buscarTodasDemandas(Usuario usuario){
-        Empresa empresa = usuario.getEmpresa();
-        return funcionarioRepository.getFuncionarioByEmpresa(empresa);
+    public List<Funcionario> buscarTudo(){
+        return funcionarioRepository.findAll();
     }
 
-    public Funcionario buscarDemandaPorId(Usuario usuario, Long id){
-        Empresa empresa = usuario.getEmpresa();
-        Optional<Funcionario> optionalDemanda = funcionarioRepository.getDemandaByEmpresa(id, empresa);
-        if(optionalDemanda.isPresent()) {
-            return optionalDemanda.get();
+    public Funcionario buscarPorId(Long id){
+        Optional<Funcionario> optionalFuncionario = funcionarioRepository.findById(id);
+        if(optionalFuncionario.isPresent()) {
+            return optionalFuncionario.get();
         }
         throw new IdNotFound("funcionario", id);
     }
 
-    public void removerDemandaPorId(Usuario usuario, Long id){
-        Optional<Funcionario> optionalDemanda = funcionarioRepository.getDemandasByIdAndUsuario(id, usuario);
-        if(optionalDemanda.isPresent()) {
+    public void removerPorId(Usuario usuario, Long id){
+        Optional<Funcionario> optionalFuncionario = funcionarioRepository.findById(id, usuario);
+        if(optionalFuncionario.isPresent()) {
             funcionarioRepository.deleteById(id);
         }
         throw new IdNotFound("funcionario", id);
     }
-
 }

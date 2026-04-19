@@ -18,5 +18,6 @@ public class Usuario {
 
     private String nome;
     private String email;
+    private Boolean admin;
 
 }
