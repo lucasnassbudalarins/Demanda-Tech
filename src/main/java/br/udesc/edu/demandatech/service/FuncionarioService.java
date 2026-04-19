@@ -4,7 +4,7 @@ import br.udesc.edu.demandatech.model.dto.criar.FuncionarioCriarDTO;
 import br.udesc.edu.demandatech.model.dto.editar.FuncionarioEditarDTO;
 import br.udesc.edu.demandatech.model.entity.Funcionario;
 import br.udesc.edu.demandatech.model.entity.Usuario;
-import br.udesc.edu.demandatech.model.exception.IdNotFoud;
+import br.udesc.edu.demandatech.model.exception.IdNotFound;
 import br.udesc.edu.demandatech.repository.FuncionarioRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
@@ -31,7 +31,7 @@ public class FuncionarioService {
             BeanUtils.copyProperties(funcionarioEditarDTO,funcionario);
             return funcionarioRepository.save(funcionario);
         }
-        throw new IdNotFoud("funcionario", id);
+        throw new IdNotFound("funcionario", id);
     }
 
     public List<Funcionario> buscarTodasDemandas(Usuario usuario){
@@ -45,7 +45,7 @@ public class FuncionarioService {
         if(optionalDemanda.isPresent()) {
             return optionalDemanda.get();
         }
-        throw new IdNotFoud("funcionario", id);
+        throw new IdNotFound("funcionario", id);
     }
 
     public void removerDemandaPorId(Usuario usuario, Long id){
@@ -53,7 +53,7 @@ public class FuncionarioService {
         if(optionalDemanda.isPresent()) {
             funcionarioRepository.deleteById(id);
         }
-        throw new IdNotFoud("funcionario", id);
+        throw new IdNotFound("funcionario", id);
     }
 
 }
