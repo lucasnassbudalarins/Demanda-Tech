@@ -1,15 +1,12 @@
 package br.udesc.edu.demandatech.service;
 
 import br.udesc.edu.demandatech.model.dto.criar.EstornoDemandaCriarDTO;
-import br.udesc.edu.demandatech.model.dto.criar.FuncionarioCriarDTO;
-import br.udesc.edu.demandatech.model.dto.editar.FuncionarioEditarDTO;
 import br.udesc.edu.demandatech.model.dto.relatorio.QtdEstornosPorResponsavel;
 import br.udesc.edu.demandatech.model.entity.EstornoDemanda;
 import br.udesc.edu.demandatech.model.entity.Funcionario;
 import br.udesc.edu.demandatech.model.exception.IdNaoEncontrado;
 import br.udesc.edu.demandatech.model.exception.PermissaoNegada;
 import br.udesc.edu.demandatech.repository.EstornoDemandaRepository;
-import br.udesc.edu.demandatech.repository.FuncionarioRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -24,7 +21,7 @@ public class EstornoDemandaService {
 
     public EstornoDemanda criar(EstornoDemandaCriarDTO estornoDemandaCriarDTO) {
         EstornoDemanda estornoDemanda = new EstornoDemanda();
-        BeanUtils.copyProperties(estornoDemandaCriarDTO,estornoDemanda);
+        BeanUtils.copyProperties(estornoDemandaCriarDTO, estornoDemanda);
         return estornoDemandaRepository.save(estornoDemanda);
     }
 
@@ -37,7 +34,7 @@ public class EstornoDemandaService {
             if (funcionario.getAdmin() ||
                     estornoDemandaRepository.funcionarioCanEdit(id, funcionario))
             {
-                BeanUtils.copyProperties(estornoDemandaCriarDTO,atualizarEstornoDemanda);
+                BeanUtils.copyProperties(estornoDemandaCriarDTO, atualizarEstornoDemanda);
                 return estornoDemandaRepository.save(atualizarEstornoDemanda);
             } else {
                 throw new PermissaoNegada();
@@ -55,15 +52,16 @@ public class EstornoDemandaService {
         if(optionalEstornoDemanda.isPresent()) {
             return optionalEstornoDemanda.get();
         }
-        throw new IdNaoEncontrado("funcionário", id);
+        throw new IdNaoEncontrado("estorno demanda", id);
     }
 
     public void removerPorId(Long id){
         Optional<EstornoDemanda> optionalEstornoDemanda = estornoDemandaRepository.findById(id);
         if(optionalEstornoDemanda.isPresent()) {
             estornoDemandaRepository.deleteById(id);
+            return;
         }
-        throw new IdNaoEncontrado("funcionário", id);
+        throw new IdNaoEncontrado("estorno demanda", id);
     }
 
     public String relatorioQtdEstornosPorResponsavel(){
@@ -76,7 +74,7 @@ public class EstornoDemandaService {
         """;
         String conteudo = "";
         for (QtdEstornosPorResponsavel item : relatorio){
-            conteudo += "|" + item.getIdResponsavel() + " | " + item.getResponsavel() + " | " + item.getQtdEstornos();
+            conteudo += "| " + item.getIdResponsavel() + " | " + item.getResponsavel() + " | " + item.getQtdEstornos() + " |\n";
         }
         String footer = "--------------------------------------------------------------------";
         return cabecalho + conteudo + footer;

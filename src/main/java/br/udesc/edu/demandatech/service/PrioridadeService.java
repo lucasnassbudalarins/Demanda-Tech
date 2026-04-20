@@ -24,9 +24,9 @@ public class PrioridadeService {
             throw new PermissaoNegada();
         }
         Prioridade prioridade = new Prioridade();
-        BeanUtils.copyProperties(prioridadeCriarDTO,prioridade);
+        BeanUtils.copyProperties(prioridadeCriarDTO, prioridade);
 
-        return prioridade = prioridadeRepository.save(prioridade);
+        return prioridadeRepository.save(prioridade);
     }
 
     public Prioridade atualizar(Long id, PrioridadeEditarDTO prioridadeEditarDTO, Funcionario funcionario) {
@@ -46,7 +46,7 @@ public class PrioridadeService {
         return prioridadeRepository.findAll();
     }
 
-    public Prioridade buscarPorId(Prioridade prioridade, Long id) {
+    public Prioridade buscarPorId(Long id) {
         Optional<Prioridade> opcionalPrioridade = prioridadeRepository.findById(id);
         if(opcionalPrioridade.isPresent()) {
             return opcionalPrioridade.get();
@@ -61,6 +61,7 @@ public class PrioridadeService {
         Optional<Prioridade> optionalPrioridade = prioridadeRepository.findById(id);
         if(optionalPrioridade.isPresent()) {
             prioridadeRepository.deleteById(id);
+            return;
         }
         throw new IdNaoEncontrado("prioridade", id);
     }

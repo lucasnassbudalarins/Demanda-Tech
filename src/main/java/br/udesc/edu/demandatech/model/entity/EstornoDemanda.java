@@ -11,10 +11,12 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@Table(name = "estorno_demanda", schema = "demanda_tech")
 public class EstornoDemanda {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "estorno_seq")
+    @SequenceGenerator(name = "estorno_seq", sequenceName = "demanda_tech.estorno_demanda_id_estorno_seq", allocationSize = 1)
     @Column(name = "id_estorno")
     private Long idEstorno;
 

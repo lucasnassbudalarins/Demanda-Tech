@@ -23,7 +23,7 @@ public class FuncionarioService {
             throw new PermissaoNegada();
         }
         Funcionario novoFuncionario = new Funcionario();
-        BeanUtils.copyProperties(funcionarioCriarDTO,novoFuncionario);
+        BeanUtils.copyProperties(funcionarioCriarDTO, novoFuncionario);
         return funcionarioRepository.save(novoFuncionario);
     }
 
@@ -34,7 +34,7 @@ public class FuncionarioService {
         Optional<Funcionario> optionalFuncionario = funcionarioRepository.findById(id);
         if(optionalFuncionario.isPresent()){
             Funcionario atualizarFuncionario = optionalFuncionario.get();
-            BeanUtils.copyProperties(funcionarioEditarDTO,atualizarFuncionario);
+            BeanUtils.copyProperties(funcionarioEditarDTO, atualizarFuncionario);
             return funcionarioRepository.save(atualizarFuncionario);
         }
         throw new IdNaoEncontrado("funcionário", id);
@@ -59,8 +59,8 @@ public class FuncionarioService {
         Optional<Funcionario> optionalFuncionario = funcionarioRepository.findById(id);
         if(optionalFuncionario.isPresent()) {
             funcionarioRepository.deleteById(id);
+            return;
         }
         throw new IdNaoEncontrado("funcionário", id);
     }
-
 }

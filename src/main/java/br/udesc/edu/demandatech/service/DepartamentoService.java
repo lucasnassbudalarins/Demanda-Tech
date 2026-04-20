@@ -25,7 +25,7 @@ public class DepartamentoService {
             throw new PermissaoNegada();
         }
         Departamento departamento = new Departamento();
-        BeanUtils.copyProperties(departamentoCriarDTO,departamento);
+        BeanUtils.copyProperties(departamentoCriarDTO, departamento);
 
         return departamentoRepository.save(departamento);
     }
@@ -70,6 +70,7 @@ public class DepartamentoService {
         Optional<Departamento> optionalDepartamento = departamentoRepository.findById(id);
         if(optionalDepartamento.isPresent()) {
             departamentoRepository.deleteById(id);
+            return;
         }
         throw new IdNaoEncontrado("departamento", id);
     }

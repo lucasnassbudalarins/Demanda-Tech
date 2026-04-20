@@ -1,9 +1,6 @@
 package br.udesc.edu.demandatech.model.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,15 +9,17 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@IdClass(FuncionarioEnvolvidoId.class)
+@Table(name = "funcionarios_envolvidos", schema = "demanda_tech")
 public class FuncionarioEnvolvido {
 
     @Id
     @ManyToOne
-    @JoinColumn(name = "matricula_usuario")
+    @JoinColumn(name = "matricula_funcionario")
     private Funcionario funcionario;
+
     @Id
     @ManyToOne
     @JoinColumn(name = "id_demanda")
     private Demanda demanda;
-
 }

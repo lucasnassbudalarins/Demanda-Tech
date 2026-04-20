@@ -9,10 +9,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@Table(name = "funcionarios", schema = "demanda_tech")
 public class Funcionario {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "funcionarios_seq")
+    @SequenceGenerator(name = "funcionarios_seq", sequenceName = "demanda_tech.funcionarios_matricula_seq", allocationSize = 1)
     private Long matricula;
 
     private String nome;
@@ -20,8 +22,6 @@ public class Funcionario {
     private Boolean admin;
 
     @ManyToOne
-    @Column(name = "id_departamento")
+    @JoinColumn(name = "id_departamento")
     private Departamento departamento;
-
-
 }

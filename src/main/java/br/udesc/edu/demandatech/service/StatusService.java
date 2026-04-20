@@ -24,9 +24,9 @@ public class StatusService {
             throw new PermissaoNegada();
         }
         Status status = new Status();
-        BeanUtils.copyProperties(statusCriarDTO,status);
+        BeanUtils.copyProperties(statusCriarDTO, status);
 
-        return status = statusRepository.save(status);
+        return statusRepository.save(status);
     }
 
     public Status atualizar(Long id, StatusEditarDTO statusEditarDTO, Funcionario funcionario) {
@@ -46,7 +46,7 @@ public class StatusService {
         return statusRepository.findAll();
     }
 
-    public Status buscarPorId(Status status, Long id) {
+    public Status buscarPorId(Long id) {
         Optional<Status> opcionalStatus = statusRepository.findById(id);
         if(opcionalStatus.isPresent()) {
             return opcionalStatus.get();
@@ -61,6 +61,7 @@ public class StatusService {
         Optional<Status> optionalStatus = statusRepository.findById(id);
         if(optionalStatus.isPresent()) {
             statusRepository.deleteById(id);
+            return;
         }
         throw new IdNaoEncontrado("status", id);
     }

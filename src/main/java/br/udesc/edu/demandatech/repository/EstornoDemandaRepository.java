@@ -1,6 +1,5 @@
 package br.udesc.edu.demandatech.repository;
 
-import br.udesc.edu.demandatech.model.dto.relatorio.QtdDemandasPorDepartamento;
 import br.udesc.edu.demandatech.model.dto.relatorio.QtdEstornosPorResponsavel;
 import br.udesc.edu.demandatech.model.entity.EstornoDemanda;
 import br.udesc.edu.demandatech.model.entity.Funcionario;
@@ -15,11 +14,11 @@ import java.util.List;
 public interface EstornoDemandaRepository extends JpaRepository<EstornoDemanda, Long> {
 
     @Query("""
-    SELECT COUNT(ed) > 0 
-    FROM EstornoDemanda ed 
-    JOIN ed.demanda d 
-    WHERE 
-        ed.idEstorno = :idEstorno 
+    SELECT COUNT(ed) > 0
+    FROM EstornoDemanda ed
+    JOIN ed.demanda d
+    WHERE
+        ed.idEstorno = :idEstorno
         AND (d.criador = :funcionario OR d.responsavel = :funcionario)
     """)
     boolean funcionarioCanEdit(
@@ -33,8 +32,7 @@ public interface EstornoDemandaRepository extends JpaRepository<EstornoDemanda, 
                 dem.responsavel.matricula, dem.responsavel.nome, COUNT(ed)
             )
         FROM EstornoDemanda ed
-        LEFT JOIN Demanda dem ON ed.demanda = dem
-        JOIN Funcionario f ON dem.responsavel, f.departamento
+        JOIN ed.demanda dem
         GROUP BY dem.responsavel.matricula, dem.responsavel.nome
         ORDER BY COUNT(ed) DESC
     """)

@@ -5,15 +5,15 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@Table(name = "departamentos", schema = "demanda_tech")
 public class Departamento {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "departamentos_seq")
+    @SequenceGenerator(name = "departamentos_seq", sequenceName = "demanda_tech.departamentos_id_departamento_seq", allocationSize = 1)
     @Column(name = "id_departamento")
     private Long idDepartamento;
 
@@ -22,9 +22,4 @@ public class Departamento {
     @OneToOne
     @JoinColumn(name = "gerente")
     private Funcionario gerente;
-
-    @ManyToOne
-    @Column(name = "responsavel")
-    private Funcionario responsavel;
-
 }

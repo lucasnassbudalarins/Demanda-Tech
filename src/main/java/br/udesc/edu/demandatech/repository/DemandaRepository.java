@@ -1,8 +1,8 @@
 package br.udesc.edu.demandatech.repository;
 
 import br.udesc.edu.demandatech.model.dto.relatorio.QtdDemandasPorDepartamento;
+import br.udesc.edu.demandatech.model.dto.relatorio.DezFuncionariosMaisProdutivos;
 import br.udesc.edu.demandatech.model.entity.Demanda;
-import br.udesc.edu.demandatech.model.entity.Departamento;
 import br.udesc.edu.demandatech.model.entity.Funcionario;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -24,27 +24,41 @@ public interface DemandaRepository extends JpaRepository<Demanda, Long> {
     Optional<Demanda> getDemandasByIdAndUsuario(Long id, Funcionario criador);
 
     @Query(value = """
-        SELECT f.* FROM Funcionario f 
-        LEFT JOIN Demanda d ON f.responsavel = d.responsavel 
-        WHERE f.id_departamento = :idDepartamento 
-        GROUP BY f.responsavel 
-        ORDER BY COUNT(d.id_demanda) ASC 
+        SELECT f.* FROM demanda_tech.funcionarios f
+        LEFT JOIN demanda_tech.demandas d ON d.responsavel = f.matricula
+        WHERE f.id_departamento = :idDepartamento
+        GROUP BY f.matricula
+        ORDER BY COUNT(d.id_demanda) ASC
         LIMIT 1
     """, nativeQuery = true)
     Optional<Funcionario> findFuncionarioComMenosDemandas(@Param("idDepartamento") Long idDepartamento);
 
     @Query("""
-        SELECT 
+        SELECT
             new br.udesc.edu.demandatech.model.dto.relatorio.QtdDemandasPorDepartamento(
                 dp.idDepartamento, dp.descricao, COUNT(dem)
             )
         FROM Demanda dem
-        JOIN TipoDemanda td ON dem.tipo.idTipo = td.idTipo
-        JOIN Departamento dp ON td.departamento.idDepartamento = dp.idDepartamento
-        JOIN Status st ON dem.status = st.idStatus
+        JOIN dem.tipo td
+        JOIN td.departamento dp
+        JOIN dem.status st
         WHERE st.descricao = 'Ativo'
         GROUP BY dp.idDepartamento, dp.descricao
     """)
     List<QtdDemandasPorDepartamento> relatorioQtdDemandasPorDepartamento();
 
+    @Query("""
+        SELECT
+            new br.udesc.edu.demandatech.model.dto.relatorio.DezFuncionariosMaisProdutivos(
+                f.matricula, f.nome, COUNT(dem)
+            )
+        FROM Demanda dem
+        JOIN dem.responsavel f
+        JOIN dem.status st
+        WHERE st.descricao = 'Resolvido'
+        GROUP BY f.matricula, f.nome
+        ORDER BY COUNT(dem) DESC
+        LIMIT 10
+    """)
+    List<DezFuncionariosMaisProdutivos> relatorioDezFuncionariosMaisProdutivos();
 }

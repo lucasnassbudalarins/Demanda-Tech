@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -13,15 +12,14 @@ import java.time.LocalTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@Table(name = "demandas", schema = "demanda_tech")
 public class Demanda {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "demandas_seq")
+    @SequenceGenerator(name = "demandas_seq", sequenceName = "demanda_tech.demandas_id_demanda_seq", allocationSize = 1)
     @Column(name = "id_demanda")
     private Long idDemanda;
-
-    @Column(name = "id_status")
-    private Long status;
 
     private String titulo;
     private LocalDate data;
@@ -43,4 +41,8 @@ public class Demanda {
     @ManyToOne
     @JoinColumn(name = "responsavel")
     private Funcionario responsavel;
+
+    @ManyToOne
+    @JoinColumn(name = "id_status")
+    private Status status;
 }

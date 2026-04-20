@@ -1,3 +1,13 @@
+--
+-- PostgreSQL database dump
+--
+
+\restrict HchUGDgfbe6rUSHCarKeZH83ZrgYcdgmoHmcGOfg7noMA4aaxjkBpTwLFFOBigU
+
+-- Dumped from database version 18.3
+-- Dumped by pg_dump version 18.1
+
+-- Started on 2026-04-19 19:30:39
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -38,8 +48,9 @@ CREATE TABLE demanda_tech.demandas (
     descricao character varying(250),
     id_prioridade bigint DEFAULT 0 NOT NULL,
     id_tipo bigint NOT NULL,
-    matricula_funcionario_responsavel bigint,
-    id_usuario bigint NOT NULL
+    responsavel bigint,
+    criador bigint CONSTRAINT demandas_id_usuario_not_null NOT NULL,
+    id_status bigint NOT NULL
 );
 
 
@@ -61,7 +72,7 @@ CREATE SEQUENCE demanda_tech.demandas_id_demanda_seq
 ALTER SEQUENCE demanda_tech.demandas_id_demanda_seq OWNER TO postgres;
 
 --
--- TOC entry 5092 (class 0 OID 0)
+-- TOC entry 5093 (class 0 OID 0)
 -- Dependencies: 230
 -- Name: demandas_id_demanda_seq; Type: SEQUENCE OWNED BY; Schema: demanda_tech; Owner: postgres
 --
@@ -99,7 +110,7 @@ CREATE SEQUENCE demanda_tech.departamentos_id_departamento_seq
 ALTER SEQUENCE demanda_tech.departamentos_id_departamento_seq OWNER TO postgres;
 
 --
--- TOC entry 5093 (class 0 OID 0)
+-- TOC entry 5094 (class 0 OID 0)
 -- Dependencies: 224
 -- Name: departamentos_id_departamento_seq; Type: SEQUENCE OWNED BY; Schema: demanda_tech; Owner: postgres
 --
@@ -138,7 +149,7 @@ CREATE SEQUENCE demanda_tech.estorno_demanda_id_estorno_seq
 ALTER SEQUENCE demanda_tech.estorno_demanda_id_estorno_seq OWNER TO postgres;
 
 --
--- TOC entry 5094 (class 0 OID 0)
+-- TOC entry 5095 (class 0 OID 0)
 -- Dependencies: 233
 -- Name: estorno_demanda_id_estorno_seq; Type: SEQUENCE OWNED BY; Schema: demanda_tech; Owner: postgres
 --
@@ -191,7 +202,7 @@ CREATE SEQUENCE demanda_tech.funcionarios_matricula_seq
 ALTER SEQUENCE demanda_tech.funcionarios_matricula_seq OWNER TO postgres;
 
 --
--- TOC entry 5095 (class 0 OID 0)
+-- TOC entry 5096 (class 0 OID 0)
 -- Dependencies: 226
 -- Name: funcionarios_matricula_seq; Type: SEQUENCE OWNED BY; Schema: demanda_tech; Owner: postgres
 --
@@ -213,7 +224,7 @@ CREATE TABLE demanda_tech.prioridades (
 ALTER TABLE demanda_tech.prioridades OWNER TO postgres;
 
 --
--- TOC entry 5096 (class 0 OID 0)
+-- TOC entry 5097 (class 0 OID 0)
 -- Dependencies: 221
 -- Name: TABLE prioridades; Type: COMMENT; Schema: demanda_tech; Owner: postgres
 --
@@ -222,7 +233,7 @@ COMMENT ON TABLE demanda_tech.prioridades IS 'Relação Prioridades';
 
 
 --
--- TOC entry 5097 (class 0 OID 0)
+-- TOC entry 5098 (class 0 OID 0)
 -- Dependencies: 221
 -- Name: COLUMN prioridades.id_prioridade; Type: COMMENT; Schema: demanda_tech; Owner: postgres
 --
@@ -231,7 +242,7 @@ COMMENT ON COLUMN demanda_tech.prioridades.id_prioridade IS 'Código da Relaçã
 
 
 --
--- TOC entry 5098 (class 0 OID 0)
+-- TOC entry 5099 (class 0 OID 0)
 -- Dependencies: 221
 -- Name: COLUMN prioridades.descricao; Type: COMMENT; Schema: demanda_tech; Owner: postgres
 --
@@ -255,7 +266,7 @@ CREATE SEQUENCE demanda_tech.prioridades_id_prioridade_seq
 ALTER SEQUENCE demanda_tech.prioridades_id_prioridade_seq OWNER TO postgres;
 
 --
--- TOC entry 5099 (class 0 OID 0)
+-- TOC entry 5100 (class 0 OID 0)
 -- Dependencies: 220
 -- Name: prioridades_id_prioridade_seq; Type: SEQUENCE OWNED BY; Schema: demanda_tech; Owner: postgres
 --
@@ -277,7 +288,7 @@ CREATE TABLE demanda_tech.status (
 ALTER TABLE demanda_tech.status OWNER TO postgres;
 
 --
--- TOC entry 5100 (class 0 OID 0)
+-- TOC entry 5101 (class 0 OID 0)
 -- Dependencies: 223
 -- Name: TABLE status; Type: COMMENT; Schema: demanda_tech; Owner: postgres
 --
@@ -286,7 +297,7 @@ COMMENT ON TABLE demanda_tech.status IS 'Relação Status';
 
 
 --
--- TOC entry 5101 (class 0 OID 0)
+-- TOC entry 5102 (class 0 OID 0)
 -- Dependencies: 223
 -- Name: COLUMN status.id_status; Type: COMMENT; Schema: demanda_tech; Owner: postgres
 --
@@ -295,7 +306,7 @@ COMMENT ON COLUMN demanda_tech.status.id_status IS 'Código da Relação Status'
 
 
 --
--- TOC entry 5102 (class 0 OID 0)
+-- TOC entry 5103 (class 0 OID 0)
 -- Dependencies: 223
 -- Name: COLUMN status.descricao; Type: COMMENT; Schema: demanda_tech; Owner: postgres
 --
@@ -319,7 +330,7 @@ CREATE SEQUENCE demanda_tech.status_id_status_seq
 ALTER SEQUENCE demanda_tech.status_id_status_seq OWNER TO postgres;
 
 --
--- TOC entry 5103 (class 0 OID 0)
+-- TOC entry 5104 (class 0 OID 0)
 -- Dependencies: 222
 -- Name: status_id_status_seq; Type: SEQUENCE OWNED BY; Schema: demanda_tech; Owner: postgres
 --
@@ -357,7 +368,7 @@ CREATE SEQUENCE demanda_tech.tipos_de_demanda_id_tipo_seq
 ALTER SEQUENCE demanda_tech.tipos_de_demanda_id_tipo_seq OWNER TO postgres;
 
 --
--- TOC entry 5104 (class 0 OID 0)
+-- TOC entry 5105 (class 0 OID 0)
 -- Dependencies: 228
 -- Name: tipos_de_demanda_id_tipo_seq; Type: SEQUENCE OWNED BY; Schema: demanda_tech; Owner: postgres
 --
@@ -419,6 +430,149 @@ ALTER TABLE ONLY demanda_tech.status ALTER COLUMN id_status SET DEFAULT nextval(
 --
 
 ALTER TABLE ONLY demanda_tech.tipos_de_demanda ALTER COLUMN id_tipo SET DEFAULT nextval('demanda_tech.tipos_de_demanda_id_tipo_seq'::regclass);
+
+
+--
+-- TOC entry 5084 (class 0 OID 32895)
+-- Dependencies: 231
+-- Data for Name: demandas; Type: TABLE DATA; Schema: demanda_tech; Owner: postgres
+--
+
+COPY demanda_tech.demandas (id_demanda, titulo, data, hora, descricao, id_prioridade, id_tipo, responsavel, criador, id_status) FROM stdin;
+\.
+
+
+--
+-- TOC entry 5078 (class 0 OID 32849)
+-- Dependencies: 225
+-- Data for Name: departamentos; Type: TABLE DATA; Schema: demanda_tech; Owner: postgres
+--
+
+COPY demanda_tech.departamentos (id_departamento, descricao, gerente) FROM stdin;
+\.
+
+
+--
+-- TOC entry 5087 (class 0 OID 32949)
+-- Dependencies: 234
+-- Data for Name: estorno_demanda; Type: TABLE DATA; Schema: demanda_tech; Owner: postgres
+--
+
+COPY demanda_tech.estorno_demanda (id_estorno, descricao, data, id_demanda) FROM stdin;
+\.
+
+
+--
+-- TOC entry 5080 (class 0 OID 32858)
+-- Dependencies: 227
+-- Data for Name: funcionarios; Type: TABLE DATA; Schema: demanda_tech; Owner: postgres
+--
+
+COPY demanda_tech.funcionarios (matricula, nome, email, id_departamento, admin) FROM stdin;
+\.
+
+
+--
+-- TOC entry 5085 (class 0 OID 32929)
+-- Dependencies: 232
+-- Data for Name: funcionarios_envolvidos; Type: TABLE DATA; Schema: demanda_tech; Owner: postgres
+--
+
+COPY demanda_tech.funcionarios_envolvidos (matricula_funcionario, id_demanda) FROM stdin;
+\.
+
+
+--
+-- TOC entry 5074 (class 0 OID 32806)
+-- Dependencies: 221
+-- Data for Name: prioridades; Type: TABLE DATA; Schema: demanda_tech; Owner: postgres
+--
+
+COPY demanda_tech.prioridades (id_prioridade, descricao) FROM stdin;
+\.
+
+
+--
+-- TOC entry 5076 (class 0 OID 32815)
+-- Dependencies: 223
+-- Data for Name: status; Type: TABLE DATA; Schema: demanda_tech; Owner: postgres
+--
+
+COPY demanda_tech.status (id_status, descricao) FROM stdin;
+\.
+
+
+--
+-- TOC entry 5082 (class 0 OID 32880)
+-- Dependencies: 229
+-- Data for Name: tipos_de_demanda; Type: TABLE DATA; Schema: demanda_tech; Owner: postgres
+--
+
+COPY demanda_tech.tipos_de_demanda (id_tipo, descricao, id_departamento) FROM stdin;
+\.
+
+
+--
+-- TOC entry 5106 (class 0 OID 0)
+-- Dependencies: 230
+-- Name: demandas_id_demanda_seq; Type: SEQUENCE SET; Schema: demanda_tech; Owner: postgres
+--
+
+SELECT pg_catalog.setval('demanda_tech.demandas_id_demanda_seq', 1, false);
+
+
+--
+-- TOC entry 5107 (class 0 OID 0)
+-- Dependencies: 224
+-- Name: departamentos_id_departamento_seq; Type: SEQUENCE SET; Schema: demanda_tech; Owner: postgres
+--
+
+SELECT pg_catalog.setval('demanda_tech.departamentos_id_departamento_seq', 1, false);
+
+
+--
+-- TOC entry 5108 (class 0 OID 0)
+-- Dependencies: 233
+-- Name: estorno_demanda_id_estorno_seq; Type: SEQUENCE SET; Schema: demanda_tech; Owner: postgres
+--
+
+SELECT pg_catalog.setval('demanda_tech.estorno_demanda_id_estorno_seq', 1, false);
+
+
+--
+-- TOC entry 5109 (class 0 OID 0)
+-- Dependencies: 226
+-- Name: funcionarios_matricula_seq; Type: SEQUENCE SET; Schema: demanda_tech; Owner: postgres
+--
+
+SELECT pg_catalog.setval('demanda_tech.funcionarios_matricula_seq', 1, false);
+
+
+--
+-- TOC entry 5110 (class 0 OID 0)
+-- Dependencies: 220
+-- Name: prioridades_id_prioridade_seq; Type: SEQUENCE SET; Schema: demanda_tech; Owner: postgres
+--
+
+SELECT pg_catalog.setval('demanda_tech.prioridades_id_prioridade_seq', 1, false);
+
+
+--
+-- TOC entry 5111 (class 0 OID 0)
+-- Dependencies: 222
+-- Name: status_id_status_seq; Type: SEQUENCE SET; Schema: demanda_tech; Owner: postgres
+--
+
+SELECT pg_catalog.setval('demanda_tech.status_id_status_seq', 1, false);
+
+
+--
+-- TOC entry 5112 (class 0 OID 0)
+-- Dependencies: 228
+-- Name: tipos_de_demanda_id_tipo_seq; Type: SEQUENCE SET; Schema: demanda_tech; Owner: postgres
+--
+
+SELECT pg_catalog.setval('demanda_tech.tipos_de_demanda_id_tipo_seq', 1, false);
 
 
 --
@@ -494,7 +648,7 @@ ALTER TABLE ONLY demanda_tech.tipos_de_demanda
 
 
 --
--- TOC entry 4922 (class 2606 OID 32941)
+-- TOC entry 4923 (class 2606 OID 32941)
 -- Name: funcionarios_envolvidos fk_demandas; Type: FK CONSTRAINT; Schema: demanda_tech; Owner: postgres
 --
 
@@ -508,7 +662,7 @@ ALTER TABLE ONLY demanda_tech.funcionarios_envolvidos
 --
 
 ALTER TABLE ONLY demanda_tech.demandas
-    ADD CONSTRAINT fk_demandas_funcionarios FOREIGN KEY (matricula_funcionario_responsavel) REFERENCES demanda_tech.funcionarios(matricula);
+    ADD CONSTRAINT fk_demandas_funcionarios FOREIGN KEY (responsavel) REFERENCES demanda_tech.funcionarios(matricula);
 
 
 --
@@ -530,7 +684,7 @@ ALTER TABLE ONLY demanda_tech.demandas
 
 
 --
--- TOC entry 4924 (class 2606 OID 32958)
+-- TOC entry 4925 (class 2606 OID 32958)
 -- Name: estorno_demanda fk_estorno_demanda_demandas; Type: FK CONSTRAINT; Schema: demanda_tech; Owner: postgres
 --
 
@@ -539,7 +693,7 @@ ALTER TABLE ONLY demanda_tech.estorno_demanda
 
 
 --
--- TOC entry 4923 (class 2606 OID 40960)
+-- TOC entry 4924 (class 2606 OID 40960)
 -- Name: funcionarios_envolvidos fk_funcionarios; Type: FK CONSTRAINT; Schema: demanda_tech; Owner: postgres
 --
 
@@ -566,6 +720,15 @@ ALTER TABLE ONLY demanda_tech.departamentos
 
 
 --
+-- TOC entry 4922 (class 2606 OID 40973)
+-- Name: demandas fk_status; Type: FK CONSTRAINT; Schema: demanda_tech; Owner: postgres
+--
+
+ALTER TABLE ONLY demanda_tech.demandas
+    ADD CONSTRAINT fk_status FOREIGN KEY (id_status) REFERENCES demanda_tech.status(id_status) NOT VALID;
+
+
+--
 -- TOC entry 4918 (class 2606 OID 32888)
 -- Name: tipos_de_demanda fk_tipos_demanda_departamentos; Type: FK CONSTRAINT; Schema: demanda_tech; Owner: postgres
 --
@@ -574,9 +737,11 @@ ALTER TABLE ONLY demanda_tech.tipos_de_demanda
     ADD CONSTRAINT fk_tipos_demanda_departamentos FOREIGN KEY (id_departamento) REFERENCES demanda_tech.departamentos(id_departamento);
 
 
--- Completed on 2026-04-19 15:39:00
+-- Completed on 2026-04-19 19:30:39
 
 --
 -- PostgreSQL database dump complete
 --
+
+\unrestrict HchUGDgfbe6rUSHCarKeZH83ZrgYcdgmoHmcGOfg7noMA4aaxjkBpTwLFFOBigU
 
