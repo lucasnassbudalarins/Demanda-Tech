@@ -359,22 +359,28 @@ public class DemandaConsoleView implements CommandLineRunner {
                         " Responsável: " + (dem.getResponsavel() != null ? dem.getResponsavel().getNome() : "auto")); }
                     case 2 -> {
                         demandaService.buscarTudo().forEach(
-                            d -> System.out.println("ID:" + d.getIdDemanda()
-                            + " | Título:" + d.getTitulo() + " | Data:" + d.getData()
+                            d -> System.out.println(
+                            " | ID:" + d.getIdDemanda()
+                            + " | Título:" + d.getTitulo() 
+                            + " | Descrição:" + d.getDescricao()
+                            + " | Data e hora: " + d.getData() + " " + d.getHora()
                             + " | Status:" + (d.getStatus() != null ? d.getStatus().getDescricao() : "N/A")
                             + " | Prioridade:" + (d.getPrioridade() != null ? d.getPrioridade().getDescricao() : "N/A")
-                            + " | Responsável:" + (d.getResponsavel() != null ? d.getResponsavel().getNome() : "N/A")));
+                            + " | Responsável:" + (d.getResponsavel() != null ? d.getResponsavel().getNome() : "N/A")
+                            + " | Criador:" + (d.getCriador() != null ? d.getCriador().getNome() : "N/A")));
                         }
                     case 3 -> { 
                         System.out.print("ID: "); 
                         Demanda d = demandaService.buscarPorId(lerLong());
                         System.out.println(
-                        "ID:" + d.getIdDemanda() + " | Título:" + d.getTitulo() + " | Descrição:" + d.getDescricao()
-                        + "\nData=" + d.getData() + " Hora=" + d.getHora()
-                        + "\nStatus=" + (d.getStatus() != null ? d.getStatus().getDescricao() : "N/A")
-                        + " | Prioridade=" + (d.getPrioridade() != null ? d.getPrioridade().getDescricao() : "N/A")
-                        + "\nCriador=" + (d.getCriador() != null ? d.getCriador().getNome() : "N/A")
-                        + " | Responsavel=" + (d.getResponsavel() != null ? d.getResponsavel().getNome() : "N/A")); 
+                        "\n| ID:" + d.getIdDemanda() 
+                        + "\n| Título:" + d.getTitulo() 
+                        + "\n| Descrição:" + d.getDescricao()
+                        + "\n| Data e hora: " + d.getData() + " " + d.getHora()
+                        + "\n| Status: " + (d.getStatus() != null ? d.getStatus().getDescricao() : "N/A")
+                        + "\n| Prioridade: " + (d.getPrioridade() != null ? d.getPrioridade().getDescricao() : "N/A")
+                        + "\n| Responsável: " + (d.getResponsavel() != null ? d.getResponsavel().getNome() : "N/A")
+                        + "\n| Criador: " + (d.getCriador() != null ? d.getCriador().getNome() : "N/A")); 
                     }
                     case 4 -> {
                         System.out.print("Sua matricula: "); 
@@ -410,41 +416,43 @@ public class DemandaConsoleView implements CommandLineRunner {
         int op;
         do {
             System.out.println("\n--- ESTORNOS DE DEMANDA ---");
-            System.out.println("1.Cadastrar 2.Listar 3.Buscar 4.Atualizar 5.Remover 0.Voltar");
+            System.out.println("1.Cadastrar\n2.Listar\n3.Buscar\n4.Atualizar\n5.Remover\n0.Voltar");
             op = lerInt();
             try { switch (op) {
                 case 1 -> { 
-                    System.out.print("Descricao: "); 
+                    System.out.print("Descrição: "); 
                     String desc = scanner.nextLine();
                     System.out.print("ID Demanda: "); 
                     Demanda dem = demandaService.buscarPorId(lerLong());
                     EstornoDemanda e = estornoDemandaService.criar(
-                        new EstornoDemandaCriarDTO(desc, java.time.LocalDate.now(), dem)
+                        new EstornoDemandaCriarDTO(desc, dem)
                     );
                     System.out.println("Estorno criado: ID=" + e.getIdEstorno()); }
                 case 2 -> {
                     estornoDemandaService.buscarTudo().forEach(e -> 
-                        System.out.println("ID=" + e.getIdEstorno()
-                        + " | " + e.getDescricao() + " | Data=" + e.getData()
-                        + " | Dem=" + (e.getDemanda() != null ? e.getDemanda().getIdDemanda() : "N/A")));
+                        System.out.println(
+                            "ID: " + e.getIdEstorno()
+                            + " | " + e.getDescricao() 
+                            + " | Data: " + e.getData()
+                            + " | Demanda: " + (e.getDemanda() != null ? e.getDemanda().getIdDemanda() : "N/A")));
                 }
                 case 3 -> { 
                     System.out.print("ID: "); 
                     EstornoDemanda e = estornoDemandaService.buscarPorId(lerLong());
                     System.out.println(
-                        "ID=" + e.getIdEstorno() + " | " 
-                        + e.getDescricao() + " | Data=" + e.getData()); 
+                        "ID: " + e.getIdEstorno() 
+                        + " | Descrição: " + e.getDescricao() 
+                        + " | Data: " + e.getData() 
+                        + " | Demanda: " + (e.getDemanda() != null ? e.getDemanda().getIdDemanda() : "N/A")); 
                 }
                 case 4 -> { 
                     System.out.print("ID estorno: "); 
                     Long id = lerLong();
-                    System.out.print("Matricula func: "); 
+                    System.out.print("Matrícula funcionário: "); 
                     Funcionario func = funcionarioService.buscarPorId(lerLong());
-                    System.out.print("Descricao: "); 
+                    System.out.print("Descrição: "); 
                     String desc = scanner.nextLine();
-                    System.out.print("ID Demanda: "); 
-                    Demanda dem = demandaService.buscarPorId(lerLong());
-                    estornoDemandaService.atualizar(id, new EstornoDemandaCriarDTO(desc, java.time.LocalDate.now(), dem), func);
+                    estornoDemandaService.atualizar(id, new EstornoDemandaEditarDTO(desc), func);
                     System.out.println("Atualizado!"); 
                 }
                 case 5 -> { 
@@ -462,38 +470,47 @@ public class DemandaConsoleView implements CommandLineRunner {
         int op;
         do {
             System.out.println("\n--- FUNCIONARIOS ENVOLVIDOS (Processo de Negocio) ---");
-            System.out.println("1.Associar 2.Listar por demanda 3.Listar todos 4.Remover 0.Voltar");
+            System.out.println("\n1. Associar\n2. Listar por demanda\n3. Listar todos\n4. Remover\n0. Voltar");
             op = lerInt();
-            try { switch (op) {
-                case 1 -> { 
-                    System.out.print("Matricula func: "); 
-                    Funcionario func = funcionarioService.buscarPorId(lerLong());
-                    System.out.print("ID demanda: "); 
-                    Demanda dem = demandaService.buscarPorId(lerLong());
-                    funcionarioEnvolvidoService.associar(func, dem);
-                    System.out.println("Associado: " + func.getNome() + " -> " + dem.getTitulo()); 
+            try { 
+                switch (op) { 
+                    case 1 -> { 
+                        System.out.print("Matrícula funcionário: "); 
+                        Funcionario func = funcionarioService.buscarPorId(lerLong());
+                        System.out.print("ID demanda: "); 
+                        Demanda dem = demandaService.buscarPorId(lerLong());
+                        funcionarioEnvolvidoService.associar(func, dem);
+                        System.out.println("Associado: " + func.getNome() + " -> " + dem.getTitulo()); 
+                    }
+                    case 2 -> { 
+                        System.out.print("ID demanda: "); 
+                        Demanda dem = demandaService.buscarPorId(lerLong());
+                        funcionarioEnvolvidoService.buscarPorDemanda(dem).forEach(fe ->
+                            System.out.println(
+                                "Matrícula: " 
+                                + fe.getFuncionario().getMatricula() 
+                                + " | " + fe.getFuncionario().getNome())
+                            ); 
+                    }
+                    case 3 -> {
+                        funcionarioEnvolvidoService.buscarTudo().forEach(fe -> 
+                            System.out.println(
+                                "Matrícula: " + fe.getFuncionario().getMatricula() 
+                                + " (" + fe.getFuncionario().getNome() + ")"
+                                + " | Demanda: " + fe.getDemanda().getIdDemanda() 
+                                + " (" + fe.getDemanda().getTitulo() + ")"
+                            ));
+                    }
+                    case 4 -> { 
+                        System.out.print("Matrícula funcionário: "); 
+                        Funcionario func = funcionarioService.buscarPorId(lerLong());
+                        System.out.print("ID demanda: "); 
+                        Demanda dem = demandaService.buscarPorId(lerLong());
+                        funcionarioEnvolvidoService.remover(func, dem); 
+                        System.out.println("Removido!"); 
+                    }
                 }
-                case 2 -> { 
-                    System.out.print("ID demanda: "); 
-                    Demanda dem = demandaService.buscarPorId(lerLong());
-                    funcionarioEnvolvidoService.buscarPorDemanda(dem).forEach(fe ->
-                        System.out.println("  Mat=" + fe.getFuncionario().getMatricula() + " | " + fe.getFuncionario().getNome())); 
-                }
-                case 3 -> {
-                    funcionarioEnvolvidoService.buscarTudo().forEach(fe -> 
-                        System.out.println(
-                        "Func=" + fe.getFuncionario().getMatricula() + " (" + fe.getFuncionario().getNome() + ")"
-                        + " | Dem=" + fe.getDemanda().getIdDemanda() + " (" + fe.getDemanda().getTitulo() + ")"));
-                }
-                case 4 -> { 
-                    System.out.print("Matricula func: "); 
-                    Funcionario func = funcionarioService.buscarPorId(lerLong());
-                    System.out.print("ID demanda: "); 
-                    Demanda dem = demandaService.buscarPorId(lerLong());
-                    funcionarioEnvolvidoService.remover(func, dem); 
-                    System.out.println("Removido!"); 
-                }
-            }} catch (Exception e) { 
+            } catch (Exception e) { 
                 System.out.println("ERRO: " + e.getMessage()); 
             }
         } while (op != 0);
@@ -502,14 +519,16 @@ public class DemandaConsoleView implements CommandLineRunner {
     private void menuRelatorios() {
         int op;
         do {
-            System.out.println("\n--- RELATORIOS ---");
-            System.out.println("1.Demandas por Departamento 2.Top 10 Produtivos 3.Estornos por Responsavel 0.Voltar");
+            System.out.println("\n--- RELATÓRIOS ---");
+            System.out.println("1. Demandas por Departamento\n2. Top 10 Funcionários mais Produtivos\n3. Estornos por Responsável\n0. Voltar");
             op = lerInt();
-            try { switch (op) {
-                case 1 -> System.out.println(demandaService.relatorioQtdDemandasPorDepartamento());
-                case 2 -> System.out.println(demandaService.relatorioDezFuncionariosMaisProdutivos());
-                case 3 -> System.out.println(estornoDemandaService.relatorioQtdEstornosPorResponsavel());
-            }} catch (Exception e) { 
+            try { 
+                switch (op) {
+                    case 1 -> System.out.println(demandaService.relatorioQtdDemandasPorDepartamento());
+                    case 2 -> System.out.println(demandaService.relatorioDezFuncionariosMaisProdutivos());
+                    case 3 -> System.out.println(estornoDemandaService.relatorioQtdEstornosPorResponsavel());
+                }
+            } catch (Exception e) { 
                 System.out.println("ERRO: " + e.getMessage()); 
             }
         } while (op != 0);

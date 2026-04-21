@@ -10,12 +10,12 @@ import br.udesc.edu.demandatech.model.entity.FuncionarioEnvolvido;
 import br.udesc.edu.demandatech.model.exception.IdNaoEncontrado;
 import br.udesc.edu.demandatech.model.exception.ReferenciaChaveEstrangeira;
 import br.udesc.edu.demandatech.model.exception.SemFuncionarioDisponivel;
+import br.udesc.edu.demandatech.model.exception.PermissaoNegada;
 import br.udesc.edu.demandatech.repository.DemandaRepository;
 import br.udesc.edu.demandatech.repository.EstornoDemandaRepository;
 import br.udesc.edu.demandatech.repository.FuncionarioEnvolvidoRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -57,8 +57,12 @@ public class DemandaService {
     }
 
     public Demanda atualizar(Long id, DemandaEditarDTO demandaEditarDTO, Funcionario funcionario){
-        Optional<Demanda> optionalDemanda = demandaRepository.getDemandasByIdAndUsuario(id, funcionario);
+        Optional<Demanda> optionalDemanda = demandaRepository.findById(id);
         if(optionalDemanda.isPresent()){
+            if(!optionalDemanda.get().getCriador().getMatricula().equals(funcionario.getMatricula()) &&
+               !optionalDemanda.get().getResponsavel().getMatricula().equals(funcionario.getMatricula()) &&
+               !funcionario.getAdmin()
+            ) throw new PermissaoNegada();
             Demanda demanda = optionalDemanda.get();
             BeanUtils.copyProperties(demandaEditarDTO, demanda);
             return demandaRepository.save(demanda);
@@ -80,8 +84,13 @@ public class DemandaService {
 
     @Transactional
     public void removerPorId(Funcionario funcionario, Long id){
-        Optional<Demanda> optionalDemanda = demandaRepository.getDemandasByIdAndUsuario(id, funcionario);
-        if(optionalDemanda.isPresent()) {
+        Optional<Demanda> optionalDemanda = demandaRepository.findById(id);
+        if(optionalDemanda.isPresent()){
+            if(
+                !optionalDemanda.get().getCriador().getMatricula().equals(funcionario.getMatricula()) &&
+                !optionalDemanda.get().getResponsavel().getMatricula().equals(funcionario.getMatricula()) ||
+                !funcionario.getAdmin()
+            ) throw new PermissaoNegada();
             Demanda demanda = optionalDemanda.get();
             estornoDemandaRepository.deleteAll(
                 estornoDemandaRepository.findByDemanda(demanda)
@@ -100,12 +109,12 @@ public class DemandaService {
                 demandaRepository.relatorioQtdDemandasPorDepartamento();
         String cabecalho = """
         --------------------------------------------------------------------
-        *** RELATÓRIO: Quantidade de demandas por departamento ***
+        *** RELATÓRIO: Quantidade de demandas ativas por departamento ***
         --------------------------------------------------------------------
         """;
         String conteudo = "";
         for (QtdDemandasPorDepartamento item : relatorio){
-            conteudo += "| " + item.getIdDepartamento() + " | " + item.getDepartamento() + " | " + item.getQtdDemanda() + " |\n";
+            conteudo += "| ID: " + item.getIdDepartamento() + " | Departamento: " + item.getDepartamento() + " | Qtd. Demandas: " + item.getQtdDemanda() + " |\n";
         }
         String footer = "--------------------------------------------------------------------";
         return cabecalho + conteudo + footer;
@@ -121,7 +130,7 @@ public class DemandaService {
         """;
         String conteudo = "";
         for (DezFuncionariosMaisProdutivos item : relatorio){
-            conteudo += "| " + item.getMatricula() + " | " + item.getNome() + " | " + item.getQtdDemanda() + " |\n";
+            conteudo += "| Matrícula: " + item.getMatricula() + " | Nome: " + item.getNome() + " | Qtd. Demandas: " + item.getQtdDemanda() + " |\n";
         }
         String footer = "--------------------------------------------------------------------";
         return cabecalho + conteudo + footer;

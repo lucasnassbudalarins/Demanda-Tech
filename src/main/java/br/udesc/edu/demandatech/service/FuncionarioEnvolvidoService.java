@@ -31,6 +31,9 @@ public class FuncionarioEnvolvidoService {
     public void remover(Funcionario funcionario, Demanda demanda) {
         FuncionarioEnvolvidoId id = new FuncionarioEnvolvidoId(
                 funcionario.getMatricula(), demanda.getIdDemanda());
+        if (!funcionarioEnvolvidoRepository.existsById(id)) {
+            throw new RuntimeException("Funcionário não encontrado no processo.");
+        }
         funcionarioEnvolvidoRepository.deleteById(id);
     }
 }

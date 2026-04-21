@@ -19,9 +19,9 @@ public interface DemandaRepository extends JpaRepository<Demanda, Long> {
         SELECT d FROM Demanda d
         WHERE
             d.idDemanda = ?1 AND
-            d.criador = ?2
+            (d.criador = ?2 OR d.responsavel = ?2)
     """)
-    Optional<Demanda> getDemandasByIdAndUsuario(Long id, Funcionario criador);
+    Optional<Demanda> getDemandasByIdAndUsuario(Long id, Funcionario funcionario);
 
     @Query(value = """
         SELECT f.* FROM demanda_tech.funcionarios f
