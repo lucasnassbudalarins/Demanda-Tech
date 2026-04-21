@@ -5,9 +5,11 @@ import br.udesc.edu.demandatech.model.dto.editar.FuncionarioEditarDTO;
 import br.udesc.edu.demandatech.model.entity.Funcionario;
 import br.udesc.edu.demandatech.model.exception.IdNaoEncontrado;
 import br.udesc.edu.demandatech.model.exception.PermissaoNegada;
+import br.udesc.edu.demandatech.model.exception.ReferenciaChaveEstrangeira;
 import br.udesc.edu.demandatech.repository.FuncionarioRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -58,7 +60,11 @@ public class FuncionarioService {
         }
         Optional<Funcionario> optionalFuncionario = funcionarioRepository.findById(id);
         if(optionalFuncionario.isPresent()) {
-            funcionarioRepository.deleteById(id);
+            try {
+                funcionarioRepository.deleteById(id);
+            } catch (DataIntegrityViolationException e) {
+                throw new ReferenciaChaveEstrangeira();
+            }
             return;
         }
         throw new IdNaoEncontrado("funcionário", id);

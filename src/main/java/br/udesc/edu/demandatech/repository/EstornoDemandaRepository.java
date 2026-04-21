@@ -1,6 +1,7 @@
 package br.udesc.edu.demandatech.repository;
 
 import br.udesc.edu.demandatech.model.dto.relatorio.QtdEstornosPorResponsavel;
+import br.udesc.edu.demandatech.model.entity.Demanda;
 import br.udesc.edu.demandatech.model.entity.EstornoDemanda;
 import br.udesc.edu.demandatech.model.entity.Funcionario;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,6 +14,7 @@ import java.util.List;
 @Repository
 public interface EstornoDemandaRepository extends JpaRepository<EstornoDemanda, Long> {
 
+    List<EstornoDemanda> findByDemanda(Demanda demanda);
     @Query("""
     SELECT COUNT(ed) > 0
     FROM EstornoDemanda ed

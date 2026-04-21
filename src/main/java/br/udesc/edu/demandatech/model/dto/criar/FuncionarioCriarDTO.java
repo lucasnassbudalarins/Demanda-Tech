@@ -12,6 +12,8 @@ public record FuncionarioCriarDTO(
     @NotEmpty(message = "Campo email está vazio")
     @Email
     String email,
-    Departamento departamento
+    Departamento departamento,
+    @NotEmpty(message = "Campo admin está vazio")
+    boolean admin
 )
 { }

@@ -7,9 +7,11 @@ import br.udesc.edu.demandatech.model.entity.Funcionario;
 import br.udesc.edu.demandatech.model.exception.IdNaoEncontrado;
 import br.udesc.edu.demandatech.model.exception.ItemNaoEncontrado;
 import br.udesc.edu.demandatech.model.exception.PermissaoNegada;
+import br.udesc.edu.demandatech.model.exception.ReferenciaChaveEstrangeira;
 import br.udesc.edu.demandatech.repository.DepartamentoRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -69,7 +71,11 @@ public class DepartamentoService {
         }
         Optional<Departamento> optionalDepartamento = departamentoRepository.findById(id);
         if(optionalDepartamento.isPresent()) {
-            departamentoRepository.deleteById(id);
+            try {
+                departamentoRepository.deleteById(id);
+            } catch (DataIntegrityViolationException e) {
+                throw new ReferenciaChaveEstrangeira();
+            }
             return;
         }
         throw new IdNaoEncontrado("departamento", id);

@@ -9,5 +9,6 @@ public record FuncionarioEditarDTO(
     String nome,
     @Email
     String email,
-    Departamento departamento
+    Departamento departamento,
+    boolean admin
 ){}

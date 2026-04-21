@@ -6,9 +6,11 @@ import br.udesc.edu.demandatech.model.entity.EstornoDemanda;
 import br.udesc.edu.demandatech.model.entity.Funcionario;
 import br.udesc.edu.demandatech.model.exception.IdNaoEncontrado;
 import br.udesc.edu.demandatech.model.exception.PermissaoNegada;
+import br.udesc.edu.demandatech.model.exception.ReferenciaChaveEstrangeira;
 import br.udesc.edu.demandatech.repository.EstornoDemandaRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -58,7 +60,11 @@ public class EstornoDemandaService {
     public void removerPorId(Long id){
         Optional<EstornoDemanda> optionalEstornoDemanda = estornoDemandaRepository.findById(id);
         if(optionalEstornoDemanda.isPresent()) {
-            estornoDemandaRepository.deleteById(id);
+            try {
+                estornoDemandaRepository.deleteById(id);
+            } catch (DataIntegrityViolationException e) {
+                throw new ReferenciaChaveEstrangeira();
+            }
             return;
         }
         throw new IdNaoEncontrado("estorno demanda", id);

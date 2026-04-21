@@ -6,9 +6,11 @@ import br.udesc.edu.demandatech.model.entity.Funcionario;
 import br.udesc.edu.demandatech.model.entity.Status;
 import br.udesc.edu.demandatech.model.exception.IdNaoEncontrado;
 import br.udesc.edu.demandatech.model.exception.PermissaoNegada;
+import br.udesc.edu.demandatech.model.exception.ReferenciaChaveEstrangeira;
 import br.udesc.edu.demandatech.repository.StatusRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -60,7 +62,11 @@ public class StatusService {
         }
         Optional<Status> optionalStatus = statusRepository.findById(id);
         if(optionalStatus.isPresent()) {
-            statusRepository.deleteById(id);
+            try {
+                statusRepository.deleteById(id);
+            } catch (DataIntegrityViolationException e) {
+                throw new ReferenciaChaveEstrangeira();
+            }
             return;
         }
         throw new IdNaoEncontrado("status", id);

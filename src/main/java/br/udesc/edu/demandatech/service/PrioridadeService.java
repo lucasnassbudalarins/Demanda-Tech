@@ -6,9 +6,11 @@ import br.udesc.edu.demandatech.model.entity.Funcionario;
 import br.udesc.edu.demandatech.model.entity.Prioridade;
 import br.udesc.edu.demandatech.model.exception.IdNaoEncontrado;
 import br.udesc.edu.demandatech.model.exception.PermissaoNegada;
+import br.udesc.edu.demandatech.model.exception.ReferenciaChaveEstrangeira;
 import br.udesc.edu.demandatech.repository.PrioridadeRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -60,7 +62,11 @@ public class PrioridadeService {
         }
         Optional<Prioridade> optionalPrioridade = prioridadeRepository.findById(id);
         if(optionalPrioridade.isPresent()) {
-            prioridadeRepository.deleteById(id);
+            try {
+                prioridadeRepository.deleteById(id);
+            } catch (DataIntegrityViolationException e) {
+                throw new ReferenciaChaveEstrangeira();
+            }
             return;
         }
         throw new IdNaoEncontrado("prioridade", id);

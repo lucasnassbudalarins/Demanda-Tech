@@ -6,9 +6,11 @@ import br.udesc.edu.demandatech.model.entity.Funcionario;
 import br.udesc.edu.demandatech.model.entity.TipoDemanda;
 import br.udesc.edu.demandatech.model.exception.IdNaoEncontrado;
 import br.udesc.edu.demandatech.model.exception.PermissaoNegada;
+import br.udesc.edu.demandatech.model.exception.ReferenciaChaveEstrangeira;
 import br.udesc.edu.demandatech.repository.TipoDemandaRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -51,7 +53,12 @@ public class TipoDemandaService {
         }
         Optional<TipoDemanda> opcionalTipoDemanda = tipoDemandaRepository.findById(id);
         if(opcionalTipoDemanda.isPresent()) {
-            tipoDemandaRepository.deleteById(id);
+            try {
+                tipoDemandaRepository.deleteById(id);
+            } catch (DataIntegrityViolationException e) {
+                throw new ReferenciaChaveEstrangeira();
+            }
+            return;
         }
         throw new IdNaoEncontrado("tipo demanda", id);
     }

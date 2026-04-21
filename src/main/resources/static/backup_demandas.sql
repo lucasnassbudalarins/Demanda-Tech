@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS demanda_tech.funcionarios (
     matricula BIGINT PRIMARY KEY DEFAULT nextval('demanda_tech.funcionarios_matricula_seq'),
     nome VARCHAR(255),
     email VARCHAR(255),
-    admin BOOLEAN,
+    admin BOOLEAN DEFAULT false,
     id_departamento BIGINT
 );
 
@@ -97,7 +97,7 @@ TRUNCATE TABLE demanda_tech.status CASCADE;
 
 -- 1. Status
 INSERT INTO demanda_tech.status (id_status, descricao) VALUES 
-(1, 'Aberto'), (2, 'Em Andamento'), (3, 'Concluído'), (4, 'Cancelado');
+(1, 'Ativo'), (2, 'Resolvido'), (3, 'Cancelado');
 
 -- 2. Prioridades
 INSERT INTO demanda_tech.prioridades (id_prioridade, descricao) VALUES 
