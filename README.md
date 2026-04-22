@@ -20,6 +20,12 @@ Como o projeto utiliza o **Maven Wrapper**, você não precisa ter o Maven insta
 
 ---
 
+## 📁 Arquivo de Backup
+
+O arquivo de backup está localiado em `src/main/resources/static/backup_demandas.sql`. Ele foi gerado utilizando o comando `mysqldump` e pode ser restaurado utilizando o comando `mysql`.
+
+---
+
 ## ⚙️ Como o Sistema Funciona
 
 Ao rodar a aplicação, um menu interativo será exibido diretamente no Console. O sistema provê **CRUD completo** para todas as entidades fundamentais do negócio, e é estruturado nas seguintes opções:
