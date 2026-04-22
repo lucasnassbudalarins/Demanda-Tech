@@ -17,12 +17,12 @@ CREATE SEQUENCE IF NOT EXISTS demanda_tech.estorno_demanda_id_estorno_seq START 
 -- Criação de Tabelas sem FK para evitar problemas de dependência circular imediata
 CREATE TABLE IF NOT EXISTS demanda_tech.status (
     id_status BIGINT PRIMARY KEY DEFAULT nextval('demanda_tech.status_id_status_seq'),
-    descricao VARCHAR(255)
+    descricao VARCHAR(30) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS demanda_tech.prioridades (
     id_prioridade BIGINT PRIMARY KEY DEFAULT nextval('demanda_tech.prioridades_id_prioridade_seq'),
-    descricao VARCHAR(255)
+    descricao VARCHAR(30) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS demanda_tech.funcionarios (
@@ -50,33 +50,33 @@ END $$;
 
 CREATE TABLE IF NOT EXISTS demanda_tech.tipos_de_demanda (
     id_tipo BIGINT PRIMARY KEY DEFAULT nextval('demanda_tech.tipos_de_demanda_id_tipo_seq'),
-    descricao VARCHAR(255),
-    id_departamento BIGINT REFERENCES demanda_tech.departamentos(id_departamento)
+    descricao       VARCHAR(50) NOT NULL,
+    id_departamento BIGINT      NOT NULL REFERENCES demanda_tech.departamentos(id_departamento)
 );
 
 CREATE TABLE IF NOT EXISTS demanda_tech.demandas (
-    id_demanda BIGINT PRIMARY KEY DEFAULT nextval('demanda_tech.demandas_id_demanda_seq'),
-    titulo VARCHAR(30) NOT NULL,
-    data DATE NOT NULL,
-    hora TIME NOT NULL,
-    descricao VARCHAR(250),
-    id_prioridade BIGINT NOT NULL DEFAULT 0 REFERENCES demanda_tech.prioridades(id_prioridade),
-    id_tipo BIGINT NOT NULL REFERENCES demanda_tech.tipos_de_demanda(id_tipo),
+    id_demanda  BIGINT PRIMARY KEY DEFAULT nextval('demanda_tech.demandas_id_demanda_seq'),
+    titulo      VARCHAR(30)  NOT NULL,
+    data        DATE         NOT NULL,
+    hora        TIME         NOT NULL,
+    descricao   VARCHAR(250),
+    id_prioridade BIGINT NOT NULL DEFAULT 1 REFERENCES demanda_tech.prioridades(id_prioridade),
+    id_tipo     BIGINT NOT NULL REFERENCES demanda_tech.tipos_de_demanda(id_tipo),
     responsavel BIGINT REFERENCES demanda_tech.funcionarios(matricula),
-    criador BIGINT NOT NULL REFERENCES demanda_tech.funcionarios(matricula),
-    id_status BIGINT NOT NULL REFERENCES demanda_tech.status(id_status)
+    criador     BIGINT NOT NULL REFERENCES demanda_tech.funcionarios(matricula),
+    id_status   BIGINT NOT NULL REFERENCES demanda_tech.status(id_status)
 );
 
 CREATE TABLE IF NOT EXISTS demanda_tech.estorno_demanda (
     id_estorno BIGINT PRIMARY KEY DEFAULT nextval('demanda_tech.estorno_demanda_id_estorno_seq'),
-    descricao VARCHAR(255),
-    data DATE,
-    id_demanda BIGINT REFERENCES demanda_tech.demandas(id_demanda)
+    descricao  VARCHAR(250) NOT NULL,
+    data       DATE         NOT NULL,
+    id_demanda BIGINT       NOT NULL REFERENCES demanda_tech.demandas(id_demanda)
 );
 
 CREATE TABLE IF NOT EXISTS demanda_tech.funcionarios_envolvidos (
-    matricula_funcionario BIGINT REFERENCES demanda_tech.funcionarios(matricula),
-    id_demanda BIGINT REFERENCES demanda_tech.demandas(id_demanda),
+    matricula_funcionario BIGINT NOT NULL REFERENCES demanda_tech.funcionarios(matricula),
+    id_demanda            BIGINT NOT NULL REFERENCES demanda_tech.demandas(id_demanda),
     PRIMARY KEY (matricula_funcionario, id_demanda)
 );
 

@@ -1,8 +1,8 @@
 package br.udesc.edu.demandatech.view;
 
-import br.udesc.edu.demandatech.model.entity.*;
 import br.udesc.edu.demandatech.model.dto.criar.*;
 import br.udesc.edu.demandatech.model.dto.editar.*;
+import br.udesc.edu.demandatech.model.entity.*;
 import br.udesc.edu.demandatech.service.*;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.CommandLineRunner;

@@ -1,7 +1,7 @@
 package br.udesc.edu.demandatech.repository;
 
-import br.udesc.edu.demandatech.model.dto.relatorio.QtdDemandasPorDepartamento;
 import br.udesc.edu.demandatech.model.dto.relatorio.DezFuncionariosMaisProdutivos;
+import br.udesc.edu.demandatech.model.dto.relatorio.QtdDemandasPorDepartamento;
 import br.udesc.edu.demandatech.model.entity.Demanda;
 import br.udesc.edu.demandatech.model.entity.Funcionario;
 import org.springframework.data.jpa.repository.JpaRepository;
