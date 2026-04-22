@@ -29,6 +29,7 @@ CREATE TABLE IF NOT EXISTS demanda_tech.funcionarios (
     matricula BIGINT PRIMARY KEY DEFAULT nextval('demanda_tech.funcionarios_matricula_seq'),
     nome VARCHAR(255),
     email VARCHAR(255),
+    senha VARCHAR(255),
     admin BOOLEAN DEFAULT false,
     id_departamento BIGINT
 );
@@ -104,16 +105,16 @@ INSERT INTO demanda_tech.prioridades (id_prioridade, descricao) VALUES
 (1, 'Baixa'), (2, 'Média'), (3, 'Alta'), (4, 'Urgente');
 
 -- 3. Funcionários (sem departamento inicialmente para evitar conflito FK)
-INSERT INTO demanda_tech.funcionarios (matricula, nome, email, admin) VALUES 
-(1,  'Admin Sistema',    'admin@demandatech.com.br',          true),
-(2,  'João Silva',       'joao.silva@demandatech.com.br',     false),
-(3,  'Maria Souza',      'maria.souza@demandatech.com.br',    false),
-(4,  'Pedro Santos',     'pedro.santos@demandatech.com.br',   true),
-(5,  'Ana Lima',         'ana.lima@demandatech.com.br',       false),
-(6,  'Carlos Ferreira',  'carlos.f@demandatech.com.br',       false),
-(7,  'Fernanda Costa',   'fernanda.c@demandatech.com.br',     false),
-(8,  'Rafael Mendes',    'rafael.m@demandatech.com.br',       false),
-(9,  'Lucia Alves',      'lucia.a@demandatech.com.br',        false);
+INSERT INTO demanda_tech.funcionarios (matricula, nome, email, senha, admin) VALUES 
+(1,  'Admin Sistema',    'admin@demandatech.com.br',         'admin123',    true),
+(2,  'João Silva',       'joao.silva@demandatech.com.br',    'joao123',     false),
+(3,  'Maria Souza',      'maria.souza@demandatech.com.br',   'maria123',    false),
+(4,  'Pedro Santos',     'pedro.santos@demandatech.com.br',  'pedro123',    true),
+(5,  'Ana Lima',         'ana.lima@demandatech.com.br',      'ana123',      false),
+(6,  'Carlos Ferreira',  'carlos.f@demandatech.com.br',      'carlos123',   false),
+(7,  'Fernanda Costa',   'fernanda.c@demandatech.com.br',    'fernanda123', false),
+(8,  'Rafael Mendes',    'rafael.m@demandatech.com.br',      'rafael123',   false),
+(9,  'Lucia Alves',      'lucia.a@demandatech.com.br',       'lucia123',    false);
 
 -- 4. Departamentos
 INSERT INTO demanda_tech.departamentos (id_departamento, descricao, gerente) VALUES 

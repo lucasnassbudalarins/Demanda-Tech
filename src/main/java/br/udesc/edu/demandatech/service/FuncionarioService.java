@@ -4,9 +4,13 @@ import br.udesc.edu.demandatech.model.dto.criar.FuncionarioCriarDTO;
 import br.udesc.edu.demandatech.model.dto.editar.FuncionarioEditarDTO;
 import br.udesc.edu.demandatech.model.entity.Funcionario;
 import br.udesc.edu.demandatech.model.exception.IdNaoEncontrado;
+import br.udesc.edu.demandatech.model.exception.PermissaoLogin;
 import br.udesc.edu.demandatech.model.exception.PermissaoNegada;
 import br.udesc.edu.demandatech.model.exception.ReferenciaChaveEstrangeira;
+import br.udesc.edu.demandatech.model.exception.ValidacaoException;
 import br.udesc.edu.demandatech.repository.FuncionarioRepository;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validator;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -14,30 +18,44 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @AllArgsConstructor
 public class FuncionarioService {
     private FuncionarioRepository funcionarioRepository;
+    private Validator validator;
 
-    public Funcionario criar(FuncionarioCriarDTO funcionarioCriarDTO, Funcionario funcionario) {
-        if(!funcionario.getAdmin()) {
-            throw new PermissaoNegada();
+    private void validar(Object dto) {
+        Set<ConstraintViolation<Object>> violations = validator.validate(dto);
+        if (!violations.isEmpty()) {
+            throw new ValidacaoException(violations.iterator().next().getMessage());
         }
-        Funcionario novoFuncionario = new Funcionario();
-        BeanUtils.copyProperties(funcionarioCriarDTO, novoFuncionario);
-        return funcionarioRepository.save(novoFuncionario);
     }
 
-    public Funcionario atualizar(Long id, FuncionarioEditarDTO funcionarioEditarDTO, Funcionario funcionario){
-        if(!funcionario.getAdmin()) {
-            throw new PermissaoNegada();
+    private void validarEmail(String email) {
+        if (!email.contains("@") || !email.contains(".")) {
+            throw new ValidacaoException("Campo email está em formato inválido");
         }
-        Optional<Funcionario> optionalFuncionario = funcionarioRepository.findById(id);
-        if(optionalFuncionario.isPresent()){
-            Funcionario atualizarFuncionario = optionalFuncionario.get();
-            BeanUtils.copyProperties(funcionarioEditarDTO, atualizarFuncionario);
-            return funcionarioRepository.save(atualizarFuncionario);
+    }
+
+    public Funcionario criar(FuncionarioCriarDTO dto, Funcionario funcionario) {
+        if(!funcionario.getAdmin()) throw new PermissaoNegada();
+        validar(dto);
+        validarEmail(dto.email());
+        Funcionario novo = new Funcionario();
+        BeanUtils.copyProperties(dto, novo);
+        return funcionarioRepository.save(novo);
+    }
+
+    public Funcionario atualizar(Long id, FuncionarioEditarDTO dto, Funcionario funcionario){
+        if(!funcionario.getAdmin()) throw new PermissaoNegada();
+        validar(dto);
+        validarEmail(dto.email());
+        Optional<Funcionario> opt = funcionarioRepository.findById(id);
+        if(opt.isPresent()){
+            BeanUtils.copyProperties(dto, opt.get());
+            return funcionarioRepository.save(opt.get());
         }
         throw new IdNaoEncontrado("funcionário", id);
     }
@@ -47,11 +65,8 @@ public class FuncionarioService {
     }
 
     public Funcionario buscarPorId(Long id){
-        Optional<Funcionario> optionalFuncionario = funcionarioRepository.findById(id);
-        if(optionalFuncionario.isPresent()) {
-            return optionalFuncionario.get();
-        }
-        throw new IdNaoEncontrado("funcionário", id);
+        return funcionarioRepository.findById(id)
+            .orElseThrow(() -> new IdNaoEncontrado("funcionário", id));
     }
 
     public void removerPorId(Long id, Funcionario funcionario){
@@ -68,5 +83,10 @@ public class FuncionarioService {
             return;
         }
         throw new IdNaoEncontrado("funcionário", id);
+    }
+
+    public Funcionario login(Long matricula, String senha) {
+        return funcionarioRepository.findByMatriculaAndSenha(matricula, senha)
+            .orElseThrow(PermissaoLogin::new);
     }
 }

@@ -3,12 +3,14 @@ package br.udesc.edu.demandatech.model.entity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@EqualsAndHashCode(exclude = "departamento")
 @Table(name = "funcionarios", schema = "demanda_tech")
 public class Funcionario {
 
@@ -19,6 +21,7 @@ public class Funcionario {
 
     private String nome;
     private String email;
+    private String senha;
     private Boolean admin;
 
     @ManyToOne

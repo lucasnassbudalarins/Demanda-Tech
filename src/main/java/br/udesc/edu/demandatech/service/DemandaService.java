@@ -8,12 +8,14 @@ import br.udesc.edu.demandatech.model.entity.Demanda;
 import br.udesc.edu.demandatech.model.entity.Funcionario;
 import br.udesc.edu.demandatech.model.entity.FuncionarioEnvolvido;
 import br.udesc.edu.demandatech.model.exception.IdNaoEncontrado;
-import br.udesc.edu.demandatech.model.exception.ReferenciaChaveEstrangeira;
 import br.udesc.edu.demandatech.model.exception.SemFuncionarioDisponivel;
 import br.udesc.edu.demandatech.model.exception.PermissaoNegada;
+import br.udesc.edu.demandatech.model.exception.ValidacaoException;
 import br.udesc.edu.demandatech.repository.DemandaRepository;
 import br.udesc.edu.demandatech.repository.EstornoDemandaRepository;
 import br.udesc.edu.demandatech.repository.FuncionarioEnvolvidoRepository;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validator;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -23,6 +25,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @AllArgsConstructor
@@ -31,8 +34,17 @@ public class DemandaService {
     private StatusService statusService;
     private FuncionarioEnvolvidoRepository funcionarioEnvolvidoRepository;
     private EstornoDemandaRepository estornoDemandaRepository;
+    private Validator validator;
+
+    private void validar(Object dto) {
+        Set<ConstraintViolation<Object>> violations = validator.validate(dto);
+        if (!violations.isEmpty()) {
+            throw new ValidacaoException(violations.iterator().next().getMessage());
+        }
+    }
 
     public Demanda criar(DemandaCriarDTO demandaCriarDTO){
+        validar(demandaCriarDTO);
         Demanda demanda = new Demanda();
         BeanUtils.copyProperties(demandaCriarDTO, demanda);
 
@@ -57,6 +69,7 @@ public class DemandaService {
     }
 
     public Demanda atualizar(Long id, DemandaEditarDTO demandaEditarDTO, Funcionario funcionario){
+        validar(demandaEditarDTO);
         Optional<Demanda> optionalDemanda = demandaRepository.findById(id);
         if(optionalDemanda.isPresent()){
             if(!optionalDemanda.get().getCriador().getMatricula().equals(funcionario.getMatricula()) &&

@@ -7,7 +7,10 @@ import br.udesc.edu.demandatech.model.entity.Prioridade;
 import br.udesc.edu.demandatech.model.exception.IdNaoEncontrado;
 import br.udesc.edu.demandatech.model.exception.PermissaoNegada;
 import br.udesc.edu.demandatech.model.exception.ReferenciaChaveEstrangeira;
+import br.udesc.edu.demandatech.model.exception.ValidacaoException;
 import br.udesc.edu.demandatech.repository.PrioridadeRepository;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validator;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -15,19 +18,28 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @AllArgsConstructor
 public class PrioridadeService {
     private PrioridadeRepository prioridadeRepository;
+    private Validator validator;
+
+    private void validar(Object dto) {
+        Set<ConstraintViolation<Object>> violations = validator.validate(dto);
+        if (!violations.isEmpty()) {
+            throw new ValidacaoException(violations.iterator().next().getMessage());
+        }
+    }
 
     public Prioridade criar(PrioridadeCriarDTO prioridadeCriarDTO, Funcionario funcionario) {
         if(!funcionario.getAdmin()) {
             throw new PermissaoNegada();
         }
+        validar(prioridadeCriarDTO);
         Prioridade prioridade = new Prioridade();
         BeanUtils.copyProperties(prioridadeCriarDTO, prioridade);
-
         return prioridadeRepository.save(prioridade);
     }
 
@@ -35,6 +47,7 @@ public class PrioridadeService {
         if(!funcionario.getAdmin()) {
             throw new PermissaoNegada();
         }
+        validar(prioridadeEditarDTO);
         Optional<Prioridade> opcionalPrioridade = prioridadeRepository.findById(id);
         if(opcionalPrioridade.isPresent()) {
             Prioridade prioridade = opcionalPrioridade.get();

@@ -7,7 +7,10 @@ import br.udesc.edu.demandatech.model.entity.Status;
 import br.udesc.edu.demandatech.model.exception.IdNaoEncontrado;
 import br.udesc.edu.demandatech.model.exception.PermissaoNegada;
 import br.udesc.edu.demandatech.model.exception.ReferenciaChaveEstrangeira;
+import br.udesc.edu.demandatech.model.exception.ValidacaoException;
 import br.udesc.edu.demandatech.repository.StatusRepository;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validator;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -15,19 +18,28 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @AllArgsConstructor
 public class StatusService {
     private StatusRepository statusRepository;
+    private Validator validator;
+
+    private void validar(Object dto) {
+        Set<ConstraintViolation<Object>> violations = validator.validate(dto);
+        if (!violations.isEmpty()) {
+            throw new ValidacaoException(violations.iterator().next().getMessage());
+        }
+    }
 
     public Status criar(StatusCriarDTO statusCriarDTO, Funcionario funcionario) {
         if(!funcionario.getAdmin()) {
             throw new PermissaoNegada();
         }
+        validar(statusCriarDTO);
         Status status = new Status();
         BeanUtils.copyProperties(statusCriarDTO, status);
-
         return statusRepository.save(status);
     }
 
@@ -35,6 +47,7 @@ public class StatusService {
         if(!funcionario.getAdmin()) {
             throw new PermissaoNegada();
         }
+        validar(statusEditarDTO);
         Optional<Status> opcionalStatus = statusRepository.findById(id);
         if(opcionalStatus.isPresent()) {
             Status status = opcionalStatus.get();
