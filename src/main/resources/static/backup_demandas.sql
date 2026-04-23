@@ -27,11 +27,11 @@ CREATE TABLE IF NOT EXISTS demanda_tech.prioridades (
 
 CREATE TABLE IF NOT EXISTS demanda_tech.funcionarios (
     matricula BIGINT PRIMARY KEY DEFAULT nextval('demanda_tech.funcionarios_matricula_seq'),
-    nome VARCHAR(255),
-    email VARCHAR(255),
-    senha VARCHAR(255),
-    admin BOOLEAN DEFAULT false,
-    id_departamento BIGINT
+    nome VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    senha VARCHAR(60) NOT NULL,
+    admin BOOLEAN NOT NULL DEFAULT false,
+    id_departamento BIGINT NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS demanda_tech.departamentos (
@@ -109,8 +109,8 @@ INSERT INTO demanda_tech.funcionarios (matricula, nome, email, senha, admin) VAL
 (1,  'Admin Sistema',    'admin@demandatech.com.br',         'admin123',    true),
 (2,  'João Silva',       'joao.silva@demandatech.com.br',    'joao123',     false),
 (3,  'Maria Souza',      'maria.souza@demandatech.com.br',   'maria123',    false),
-(4,  'Pedro Santos',     'pedro.santos@demandatech.com.br',  'pedro123',    true),
-(5,  'Ana Lima',         'ana.lima@demandatech.com.br',      'ana123',      false),
+(4,  'Rebeca admin',     'rebeca.admin@demandatech.com.br',  'rebeca123',   true),
+(5,  'Rebeca',           'rebeca@demandatech.com.br',        'rebeca123',   false),
 (6,  'Carlos Ferreira',  'carlos.f@demandatech.com.br',      'carlos123',   false),
 (7,  'Fernanda Costa',   'fernanda.c@demandatech.com.br',    'fernanda123', false),
 (8,  'Rafael Mendes',    'rafael.m@demandatech.com.br',      'rafael123',   false),

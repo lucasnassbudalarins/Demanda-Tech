@@ -5,7 +5,7 @@ import jakarta.validation.constraints.Size;
 
 public record StatusCriarDTO(
     @NotEmpty(message = "Campo descrição está vazio")
-    @Size(max = 50, message = "Campo descrição tem mais de 50 caracteres")
+    @Size(max = 30, message = "Campo descrição tem mais de 30 caracteres")
     String descricao
 )
 { }
