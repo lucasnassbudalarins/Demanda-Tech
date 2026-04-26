@@ -17,21 +17,21 @@ CREATE SEQUENCE IF NOT EXISTS demanda_tech.estorno_demanda_id_estorno_seq START 
 -- Criação de Tabelas sem FK para evitar problemas de dependência circular imediata
 CREATE TABLE IF NOT EXISTS demanda_tech.status (
     id_status BIGINT PRIMARY KEY DEFAULT nextval('demanda_tech.status_id_status_seq'),
-    descricao VARCHAR(255)
+    descricao VARCHAR(30) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS demanda_tech.prioridades (
     id_prioridade BIGINT PRIMARY KEY DEFAULT nextval('demanda_tech.prioridades_id_prioridade_seq'),
-    descricao VARCHAR(255)
+    descricao VARCHAR(30) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS demanda_tech.funcionarios (
     matricula BIGINT PRIMARY KEY DEFAULT nextval('demanda_tech.funcionarios_matricula_seq'),
-    nome VARCHAR(255),
-    email VARCHAR(255),
-    senha VARCHAR(255),
-    admin BOOLEAN DEFAULT false,
-    id_departamento BIGINT
+    nome VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    senha VARCHAR(60) NOT NULL,
+    admin BOOLEAN NOT NULL DEFAULT false,
+    id_departamento BIGINT NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS demanda_tech.departamentos (
@@ -44,39 +44,39 @@ CREATE TABLE IF NOT EXISTS demanda_tech.departamentos (
 DO $$
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM information_schema.table_constraints WHERE constraint_name='fk_func_depto' AND table_name='funcionarios' AND table_schema='demanda_tech') THEN
-        ALTER TABLE demanda_tech.funcionarios ADD CONSTRAINT fk_func_depto FOREIGN KEY (id_departamento) REFERENCES demanda_tech.departamentos(id_departamento);
-    END IF;
+ALTER TABLE demanda_tech.funcionarios ADD CONSTRAINT fk_func_depto FOREIGN KEY (id_departamento) REFERENCES demanda_tech.departamentos(id_departamento);
+END IF;
 END $$;
 
 CREATE TABLE IF NOT EXISTS demanda_tech.tipos_de_demanda (
     id_tipo BIGINT PRIMARY KEY DEFAULT nextval('demanda_tech.tipos_de_demanda_id_tipo_seq'),
-    descricao VARCHAR(255),
-    id_departamento BIGINT REFERENCES demanda_tech.departamentos(id_departamento)
+    descricao       VARCHAR(50) NOT NULL,
+    id_departamento BIGINT      NOT NULL REFERENCES demanda_tech.departamentos(id_departamento)
 );
 
 CREATE TABLE IF NOT EXISTS demanda_tech.demandas (
-    id_demanda BIGINT PRIMARY KEY DEFAULT nextval('demanda_tech.demandas_id_demanda_seq'),
-    titulo VARCHAR(30) NOT NULL,
-    data DATE NOT NULL,
-    hora TIME NOT NULL,
-    descricao VARCHAR(250),
-    id_prioridade BIGINT NOT NULL DEFAULT 0 REFERENCES demanda_tech.prioridades(id_prioridade),
-    id_tipo BIGINT NOT NULL REFERENCES demanda_tech.tipos_de_demanda(id_tipo),
+    id_demanda  BIGINT PRIMARY KEY DEFAULT nextval('demanda_tech.demandas_id_demanda_seq'),
+    titulo      VARCHAR(30)  NOT NULL,
+    data        DATE         NOT NULL,
+    hora        TIME         NOT NULL,
+    descricao   VARCHAR(250),
+    id_prioridade BIGINT NOT NULL DEFAULT 1 REFERENCES demanda_tech.prioridades(id_prioridade),
+    id_tipo     BIGINT NOT NULL REFERENCES demanda_tech.tipos_de_demanda(id_tipo),
     responsavel BIGINT REFERENCES demanda_tech.funcionarios(matricula),
-    criador BIGINT NOT NULL REFERENCES demanda_tech.funcionarios(matricula),
-    id_status BIGINT NOT NULL REFERENCES demanda_tech.status(id_status)
+    criador     BIGINT NOT NULL REFERENCES demanda_tech.funcionarios(matricula),
+    id_status   BIGINT NOT NULL REFERENCES demanda_tech.status(id_status)
 );
 
 CREATE TABLE IF NOT EXISTS demanda_tech.estorno_demanda (
     id_estorno BIGINT PRIMARY KEY DEFAULT nextval('demanda_tech.estorno_demanda_id_estorno_seq'),
-    descricao VARCHAR(255),
-    data DATE,
-    id_demanda BIGINT REFERENCES demanda_tech.demandas(id_demanda)
+    descricao  VARCHAR(250) NOT NULL,
+    data       DATE         NOT NULL,
+    id_demanda BIGINT       NOT NULL REFERENCES demanda_tech.demandas(id_demanda)
 );
 
 CREATE TABLE IF NOT EXISTS demanda_tech.funcionarios_envolvidos (
-    matricula_funcionario BIGINT REFERENCES demanda_tech.funcionarios(matricula),
-    id_demanda BIGINT REFERENCES demanda_tech.demandas(id_demanda),
+    matricula_funcionario BIGINT NOT NULL REFERENCES demanda_tech.funcionarios(matricula),
+    id_demanda            BIGINT NOT NULL REFERENCES demanda_tech.demandas(id_demanda),
     PRIMARY KEY (matricula_funcionario, id_demanda)
 );
 
@@ -97,44 +97,37 @@ TRUNCATE TABLE demanda_tech.status CASCADE;
 -- ==========================================
 
 -- 1. Status
-INSERT INTO demanda_tech.status (id_status, descricao) VALUES 
+INSERT INTO demanda_tech.status (id_status, descricao) VALUES
 (1, 'Ativo'), (2, 'Resolvido'), (3, 'Cancelado');
 
 -- 2. Prioridades
-INSERT INTO demanda_tech.prioridades (id_prioridade, descricao) VALUES 
+INSERT INTO demanda_tech.prioridades (id_prioridade, descricao) VALUES
 (1, 'Baixa'), (2, 'Média'), (3, 'Alta'), (4, 'Urgente');
 
--- 3. Funcionários (sem departamento inicialmente para evitar conflito FK)
-INSERT INTO demanda_tech.funcionarios (matricula, nome, email, senha, admin) VALUES 
-(1,  'Admin Sistema',    'admin@demandatech.com.br',         'admin123',    true),
-(2,  'João Silva',       'joao.silva@demandatech.com.br',    'joao123',     false),
-(3,  'Maria Souza',      'maria.souza@demandatech.com.br',   'maria123',    false),
-(4,  'Pedro Santos',     'pedro.santos@demandatech.com.br',  'pedro123',    true),
-(5,  'Ana Lima',         'ana.lima@demandatech.com.br',      'ana123',      false),
-(6,  'Carlos Ferreira',  'carlos.f@demandatech.com.br',      'carlos123',   false),
-(7,  'Fernanda Costa',   'fernanda.c@demandatech.com.br',    'fernanda123', false),
-(8,  'Rafael Mendes',    'rafael.m@demandatech.com.br',      'rafael123',   false),
-(9,  'Lucia Alves',      'lucia.a@demandatech.com.br',       'lucia123',    false);
-
 -- 4. Departamentos
-INSERT INTO demanda_tech.departamentos (id_departamento, descricao, gerente) VALUES 
-(1, 'Tecnologia da Informação', 1),
-(2, 'Recursos Humanos', 4),
-(3, 'Financeiro', 3);
+INSERT INTO demanda_tech.departamentos (id_departamento, descricao) VALUES
+(1, 'Tecnologia da Informação'),
+(2, 'Recursos Humanos'),
+(3, 'Financeiro');
 
--- Atualizando funcionários com departamentos
-UPDATE demanda_tech.funcionarios SET id_departamento = 1 WHERE matricula = 1;
-UPDATE demanda_tech.funcionarios SET id_departamento = 1 WHERE matricula = 2;
-UPDATE demanda_tech.funcionarios SET id_departamento = 3 WHERE matricula = 3;
-UPDATE demanda_tech.funcionarios SET id_departamento = 2 WHERE matricula = 4;
-UPDATE demanda_tech.funcionarios SET id_departamento = 2 WHERE matricula = 5;
-UPDATE demanda_tech.funcionarios SET id_departamento = 3 WHERE matricula = 6;
-UPDATE demanda_tech.funcionarios SET id_departamento = 1 WHERE matricula = 7;
-UPDATE demanda_tech.funcionarios SET id_departamento = 1 WHERE matricula = 8;
-UPDATE demanda_tech.funcionarios SET id_departamento = 2 WHERE matricula = 9;
+-- 3. Funcionários (sem departamento inicialmente para evitar conflito FK)
+INSERT INTO demanda_tech.funcionarios (matricula, nome, email, senha, id_departamento, admin) VALUES
+(1,  'Admin Sistema',    'admin@demandatech.com.br',         'admin123',    1, true),
+(2,  'João Silva',       'joao.silva@demandatech.com.br',    'joao123',     1, false),
+(3,  'Maria Souza',      'maria.souza@demandatech.com.br',   'maria123',    1, false),
+(4,  'Rebeca admin',     'rebeca.admin@demandatech.com.br',  'rebeca123',   2, true),
+(5,  'Rebeca',           'rebeca@demandatech.com.br',        'rebeca123',   2, false),
+(6,  'Carlos Ferreira',  'carlos.f@demandatech.com.br',      'carlos123',   3, false),
+(7,  'Fernanda Costa',   'fernanda.c@demandatech.com.br',    'fernanda123', 1, false),
+(8,  'Rafael Mendes',    'rafael.m@demandatech.com.br',      'rafael123',   1, false),
+(9,  'Lucia Alves',      'lucia.a@demandatech.com.br',       'lucia123',    2, false);
+
+UPDATE demanda_tech.departamentos SET id_departamento = 1 WHERE gerente = 1;
+UPDATE demanda_tech.departamentos SET id_departamento = 2 WHERE gerente = 4;
+UPDATE demanda_tech.departamentos SET id_departamento = 3 WHERE gerente = 3;
 
 -- 5. Tipos de Demanda
-INSERT INTO demanda_tech.tipos_de_demanda (id_tipo, descricao, id_departamento) VALUES 
+INSERT INTO demanda_tech.tipos_de_demanda (id_tipo, descricao, id_departamento) VALUES
 (1, 'Manutenção de Computador', 1),
 (2, 'Acesso a Sistemas',        1),
 (3, 'Dúvida Pagamento',         3),
@@ -143,7 +136,7 @@ INSERT INTO demanda_tech.tipos_de_demanda (id_tipo, descricao, id_departamento) 
 (6, 'Reembolso de Despesa',     3);
 
 -- 6. Demandas (33 registros)
-INSERT INTO demanda_tech.demandas (id_demanda, titulo, data, hora, descricao, id_prioridade, id_tipo, responsavel, criador, id_status) VALUES 
+INSERT INTO demanda_tech.demandas (id_demanda, titulo, data, hora, descricao, id_prioridade, id_tipo, responsavel, criador, id_status) VALUES
 (1,  'Computador não liga',      '2026-04-20', '08:30:00', 'Meu PC está com tela preta desde ontem.',              3, 1, 1, 3, 2),
 (2,  'Acesso ao ERP',            '2026-04-20', '09:15:00', 'Preciso de acesso ao sistema de pagamentos.',          2, 2, 2, 4, 1),
 (3,  'Contratar Estagiário',     '2026-04-19', '14:00:00', 'Precisamos de um estagiário para TI.',                 2, 4, 4, 1, 3),
@@ -179,7 +172,7 @@ INSERT INTO demanda_tech.demandas (id_demanda, titulo, data, hora, descricao, id
 (33, 'Backup não executou',      '2026-04-04', '08:00:00', 'Job de backup falhou na madrugada de sexta.',          4, 5, 7, 1, 1);
 
 -- 7. Funcionários Envolvidos (14 registros)
-INSERT INTO demanda_tech.funcionarios_envolvidos (matricula_funcionario, id_demanda) VALUES 
+INSERT INTO demanda_tech.funcionarios_envolvidos (matricula_funcionario, id_demanda) VALUES
 (1, 1),  (2, 1),
 (4, 3),  (1, 3),
 (3, 10), (6, 10),
@@ -189,7 +182,7 @@ INSERT INTO demanda_tech.funcionarios_envolvidos (matricula_funcionario, id_dema
 (1, 27), (7, 31);
 
 -- 8. Estornos (6 registros)
-INSERT INTO demanda_tech.estorno_demanda (id_estorno, descricao, data, id_demanda) VALUES 
+INSERT INTO demanda_tech.estorno_demanda (id_estorno, descricao, data, id_demanda) VALUES
 (1, 'Acesso negado pelo gestor',          '2026-04-20', 2),
 (2, 'CNPJ correto, ação indevida',        '2026-04-07', 28),
 (3, 'Conta já havia sido encerrada',      '2026-04-16', 9),

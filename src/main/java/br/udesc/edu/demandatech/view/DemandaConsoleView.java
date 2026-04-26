@@ -1,8 +1,8 @@
 package br.udesc.edu.demandatech.view;
 
-import br.udesc.edu.demandatech.model.entity.*;
 import br.udesc.edu.demandatech.model.dto.criar.*;
 import br.udesc.edu.demandatech.model.dto.editar.*;
+import br.udesc.edu.demandatech.model.entity.*;
 import br.udesc.edu.demandatech.service.*;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
@@ -34,7 +34,7 @@ public class DemandaConsoleView implements CommandLineRunner {
         int opcao;
         do {
             System.out.println("\n============================================");
-            System.out.println("    DEMANDA TECH - Sistema de Gestão");
+            System.out.println("    DEMANDA TECH: Sistema de Gestão");
             System.out.println("    Usuário: " + usuarioLogado.getNome()
                 + (usuarioLogado.getAdmin() ? " [ADMIN]" : ""));
             System.out.println("============================================");
@@ -78,7 +78,7 @@ public class DemandaConsoleView implements CommandLineRunner {
     private Funcionario telaLogin() {
         while (true) {
             System.out.println("\n============================================");
-            System.out.println("        DEMANDA TECH — Login");
+            System.out.println("        DEMANDA TECH: Login");
             System.out.println("============================================");
             System.out.print("Matrícula: ");
             Long matricula = lerLong();

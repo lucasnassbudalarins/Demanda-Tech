@@ -1,8 +1,8 @@
 package br.udesc.edu.demandatech.model.dto.editar;
 
+import br.udesc.edu.demandatech.model.entity.Departamento;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
-import br.udesc.edu.demandatech.model.entity.Departamento;
 
 public record FuncionarioEditarDTO(
     @NotEmpty(message = "Campo nome está vazio")
