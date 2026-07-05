@@ -6,7 +6,7 @@ import lombok.Data;
 @AllArgsConstructor
 @Data
 public class QtdEstornosPorResponsavel {
-    private Long idResponsavel;
+    private String idResponsavel;
     private String responsavel;
     private Long qtdEstornos;
 }

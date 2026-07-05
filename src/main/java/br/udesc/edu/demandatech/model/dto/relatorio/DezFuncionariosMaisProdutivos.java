@@ -6,7 +6,7 @@ import lombok.Data;
 @AllArgsConstructor
 @Data
 public class DezFuncionariosMaisProdutivos {
-    private Long matricula;
+    private String matricula;
     private String nome;
     private Long qtdDemanda;
 }

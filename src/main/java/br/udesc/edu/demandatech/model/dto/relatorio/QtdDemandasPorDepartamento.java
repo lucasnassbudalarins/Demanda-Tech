@@ -6,7 +6,7 @@ import lombok.Data;
 @AllArgsConstructor
 @Data
 public class QtdDemandasPorDepartamento {
-    private Long idDepartamento;
+    private String idDepartamento;
     private String departamento;
     private Long qtdDemanda;
 }

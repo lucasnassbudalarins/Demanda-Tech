@@ -1,6 +1,5 @@
 package br.udesc.edu.demandatech.model.dto.criar;
 
-import br.udesc.edu.demandatech.model.entity.Departamento;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -16,7 +15,7 @@ public record FuncionarioCriarDTO(
     @Size(max = 60, message = "Campo nome tem mais de 60 caracteres")
     String senha,
     @NotNull(message = "Campo departamento está vazio")
-    Departamento departamento,
+    String departamento,
     @NotNull(message = "Campo admin está vazio")
     boolean admin
 )

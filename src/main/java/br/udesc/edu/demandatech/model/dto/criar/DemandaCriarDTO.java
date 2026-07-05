@@ -1,8 +1,5 @@
 package br.udesc.edu.demandatech.model.dto.criar;
 
-import br.udesc.edu.demandatech.model.entity.Funcionario;
-import br.udesc.edu.demandatech.model.entity.Prioridade;
-import br.udesc.edu.demandatech.model.entity.TipoDemanda;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -16,12 +13,12 @@ public record DemandaCriarDTO(
     @Size(max = 250, message = "Campo descrição tem mais de 250 caracteres")
     String descricao,
     @NotNull(message = "Campo prioridade está vazio")
-    Prioridade prioridade,
+    String prioridade,
     @NotNull(message = "Campo tipo está vazio")
-    TipoDemanda tipo,
+    String tipo,
     @NotNull(message = "Campo criador está vazio")
-    Funcionario criador,
+    String criador,
     @NotNull(message = "Campo usuarios envolvidos está vazio")
-    List<Funcionario> usuariosEnvolvidos
+    List<String> usuariosEnvolvidos
 )
 { }
