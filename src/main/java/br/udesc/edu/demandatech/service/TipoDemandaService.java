@@ -6,14 +6,12 @@ import br.udesc.edu.demandatech.model.entity.Funcionario;
 import br.udesc.edu.demandatech.model.entity.TipoDemanda;
 import br.udesc.edu.demandatech.model.exception.IdNaoEncontrado;
 import br.udesc.edu.demandatech.model.exception.PermissaoNegada;
-import br.udesc.edu.demandatech.model.exception.ReferenciaChaveEstrangeira;
 import br.udesc.edu.demandatech.model.exception.ValidacaoException;
 import br.udesc.edu.demandatech.repository.TipoDemandaRepository;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -34,18 +32,18 @@ public class TipoDemandaService {
     }
 
     public TipoDemanda criar(TipoDemandaCriarDTO tipoDemandaCriarDTO, Funcionario funcionario) {
-        if(!funcionario.getAdmin()) { throw new PermissaoNegada(); }
+        if (!funcionario.getAdmin()) { throw new PermissaoNegada(); }
         validar(tipoDemandaCriarDTO);
         TipoDemanda tipoDemanda = new TipoDemanda();
         BeanUtils.copyProperties(tipoDemandaCriarDTO, tipoDemanda);
         return tipoDemandaRepository.save(tipoDemanda);
     }
 
-    public TipoDemanda atualizar(Long id, TipoDemandaEditarDTO tipoDemandaEditarDTO, Funcionario funcionario) {
-        if(!funcionario.getAdmin()) { throw new PermissaoNegada(); }
+    public TipoDemanda atualizar(String id, TipoDemandaEditarDTO tipoDemandaEditarDTO, Funcionario funcionario) {
+        if (!funcionario.getAdmin()) { throw new PermissaoNegada(); }
         validar(tipoDemandaEditarDTO);
         Optional<TipoDemanda> opt = tipoDemandaRepository.findById(id);
-        if(opt.isPresent()) {
+        if (opt.isPresent()) {
             TipoDemanda t = opt.get();
             BeanUtils.copyProperties(tipoDemandaEditarDTO, t);
             return tipoDemandaRepository.save(t);
@@ -55,23 +53,19 @@ public class TipoDemandaService {
 
     public List<TipoDemanda> buscarTudo() { return tipoDemandaRepository.findAll(); }
 
-    public TipoDemanda buscarPorId(Long id) {
+    public TipoDemanda buscarPorId(String id) {
         Optional<TipoDemanda> opt = tipoDemandaRepository.findById(id);
-        if(opt.isPresent()) { return opt.get(); }
+        if (opt.isPresent()) { return opt.get(); }
         throw new IdNaoEncontrado("tipo demanda", id);
     }
 
-    public void removerPorId(Long id, Funcionario funcionario){
-        if(!funcionario.getAdmin()) {
+    public void removerPorId(String id, Funcionario funcionario) {
+        if (!funcionario.getAdmin()) {
             throw new PermissaoNegada();
         }
         Optional<TipoDemanda> opcionalTipoDemanda = tipoDemandaRepository.findById(id);
-        if(opcionalTipoDemanda.isPresent()) {
-            try {
-                tipoDemandaRepository.deleteById(id);
-            } catch (DataIntegrityViolationException e) {
-                throw new ReferenciaChaveEstrangeira();
-            }
+        if (opcionalTipoDemanda.isPresent()) {
+            tipoDemandaRepository.deleteById(id);
             return;
         }
         throw new IdNaoEncontrado("tipo demanda", id);

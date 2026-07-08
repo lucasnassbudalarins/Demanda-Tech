@@ -1,5 +1,6 @@
 package br.udesc.edu.demandatech.model.dto.editar;
 
+import br.udesc.edu.demandatech.model.entity.Departamento;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 
@@ -11,6 +12,6 @@ public record FuncionarioEditarDTO(
     String email,
     @NotEmpty(message = "Campo senha está vazio")
     String senha,
-    String departamento,
+    Departamento departamento,
     boolean admin
-){}
+) { }

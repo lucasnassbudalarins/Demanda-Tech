@@ -1,14 +1,11 @@
 package br.udesc.edu.demandatech.repository;
 
-
 import br.udesc.edu.demandatech.model.entity.Funcionario;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface FuncionarioRepository extends JpaRepository<Funcionario, Long> {
-    Optional<Funcionario> findByMatriculaAndSenha(Long matricula, String senha);
+public interface FuncionarioRepository extends MongoRepository<Funcionario, String> {
+    Optional<Funcionario> findByMatriculaAndSenha(String matricula, String senha);
 }
-
-

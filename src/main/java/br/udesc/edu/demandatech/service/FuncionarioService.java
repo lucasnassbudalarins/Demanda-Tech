@@ -9,7 +9,6 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -36,7 +35,8 @@ public class FuncionarioService {
     }
 
     public Funcionario criar(FuncionarioCriarDTO dto, Funcionario funcionario) {
-        if(!funcionario.getAdmin()) throw new PermissaoNegada();
+        if (!funcionario.getAdmin())
+            throw new PermissaoNegada();
         validar(dto);
         validarEmail(dto.email());
         Funcionario novo = new Funcionario();
@@ -44,45 +44,42 @@ public class FuncionarioService {
         return funcionarioRepository.save(novo);
     }
 
-    public Funcionario atualizar(Long id, FuncionarioEditarDTO dto, Funcionario funcionario){
-        if(!funcionario.getAdmin()) throw new PermissaoNegada();
+    public Funcionario atualizar(String id, FuncionarioEditarDTO dto, Funcionario funcionario) {
+        if (!funcionario.getAdmin())
+            throw new PermissaoNegada();
         validar(dto);
         validarEmail(dto.email());
         Optional<Funcionario> opt = funcionarioRepository.findById(id);
-        if(opt.isPresent()){
+        if (opt.isPresent()) {
             BeanUtils.copyProperties(dto, opt.get());
             return funcionarioRepository.save(opt.get());
         }
         throw new IdNaoEncontrado("funcionário", id);
     }
 
-    public List<Funcionario> buscarTudo(){
+    public List<Funcionario> buscarTudo() {
         return funcionarioRepository.findAll();
     }
 
-    public Funcionario buscarPorId(Long id){
+    public Funcionario buscarPorId(String id) {
         return funcionarioRepository.findById(id)
-            .orElseThrow(() -> new IdNaoEncontrado("funcionário", id));
+                .orElseThrow(() -> new IdNaoEncontrado("funcionário", id));
     }
 
-    public void removerPorId(Long id, Funcionario funcionario){
-        if(!funcionario.getAdmin()) {
+    public void removerPorId(String id, Funcionario funcionario) {
+        if (!funcionario.getAdmin()) {
             throw new PermissaoNegada();
         }
         Optional<Funcionario> optionalFuncionario = funcionarioRepository.findById(id);
-        if(optionalFuncionario.isPresent()) {
-            try {
-                funcionarioRepository.deleteById(id);
-            } catch (DataIntegrityViolationException e) {
-                throw new ReferenciaChaveEstrangeira();
-            }
+        if (optionalFuncionario.isPresent()) {
+            funcionarioRepository.deleteById(id);
             return;
         }
         throw new IdNaoEncontrado("funcionário", id);
     }
 
-    public Funcionario login(Long matricula, String senha) {
+    public Funcionario login(String matricula, String senha) {
         return funcionarioRepository.findByMatriculaAndSenha(matricula, senha)
-            .orElseThrow(PermissaoLogin::new);
+                .orElseThrow(PermissaoLogin::new);
     }
 }

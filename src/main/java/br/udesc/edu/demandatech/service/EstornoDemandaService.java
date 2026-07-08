@@ -7,14 +7,12 @@ import br.udesc.edu.demandatech.model.entity.EstornoDemanda;
 import br.udesc.edu.demandatech.model.entity.Funcionario;
 import br.udesc.edu.demandatech.model.exception.IdNaoEncontrado;
 import br.udesc.edu.demandatech.model.exception.PermissaoNegada;
-import br.udesc.edu.demandatech.model.exception.ReferenciaChaveEstrangeira;
 import br.udesc.edu.demandatech.model.exception.ValidacaoException;
 import br.udesc.edu.demandatech.repository.EstornoDemandaRepository;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -44,15 +42,13 @@ public class EstornoDemandaService {
     }
 
     public EstornoDemanda atualizar(
-            Long id, EstornoDemandaEditarDTO estornoDemandaEditarDTO, Funcionario funcionario
-    ) {
+            String id, EstornoDemandaEditarDTO estornoDemandaEditarDTO, Funcionario funcionario) {
         validar(estornoDemandaEditarDTO);
         Optional<EstornoDemanda> optionalEstornoDemanda = estornoDemandaRepository.findById(id);
-        if(optionalEstornoDemanda.isPresent()){
+        if (optionalEstornoDemanda.isPresent()) {
             EstornoDemanda atualizarEstornoDemanda = optionalEstornoDemanda.get();
             if (funcionario.getAdmin() ||
-                    estornoDemandaRepository.funcionarioCanEdit(id, funcionario))
-            {
+                    estornoDemandaRepository.funcionarioCanEdit(id, funcionario)) {
                 BeanUtils.copyProperties(estornoDemandaEditarDTO, atualizarEstornoDemanda);
                 return estornoDemandaRepository.save(atualizarEstornoDemanda);
             } else {
@@ -62,42 +58,38 @@ public class EstornoDemandaService {
         throw new IdNaoEncontrado("estorno demanda", id);
     }
 
-    public List<EstornoDemanda> buscarTudo(){
+    public List<EstornoDemanda> buscarTudo() {
         return estornoDemandaRepository.findAll();
     }
 
-    public EstornoDemanda buscarPorId(Long id){
+    public EstornoDemanda buscarPorId(String id) {
         Optional<EstornoDemanda> optionalEstornoDemanda = estornoDemandaRepository.findById(id);
-        if(optionalEstornoDemanda.isPresent()) {
+        if (optionalEstornoDemanda.isPresent()) {
             return optionalEstornoDemanda.get();
         }
         throw new IdNaoEncontrado("estorno demanda", id);
     }
 
-    public void removerPorId(Long id){
+    public void removerPorId(String id) {
         Optional<EstornoDemanda> optionalEstornoDemanda = estornoDemandaRepository.findById(id);
-        if(optionalEstornoDemanda.isPresent()) {
-            try {
-                estornoDemandaRepository.deleteById(id);
-            } catch (DataIntegrityViolationException e) {
-                throw new ReferenciaChaveEstrangeira();
-            }
+        if (optionalEstornoDemanda.isPresent()) {
+            estornoDemandaRepository.deleteById(id);
             return;
         }
         throw new IdNaoEncontrado("estorno demanda", id);
     }
 
-    public String relatorioQtdEstornosPorResponsavel(){
-        List<QtdEstornosPorResponsavel> relatorio =
-                estornoDemandaRepository.relatorioQtdEstornosPorResponsavel();
+    public String relatorioQtdEstornosPorResponsavel() {
+        List<QtdEstornosPorResponsavel> relatorio = estornoDemandaRepository.relatorioQtdEstornosPorResponsavel();
         String cabecalho = """
-        --------------------------------------------------------------------
-        *** RELATÓRIO: Quantidade de estornos por responsável da demanda ***
-        --------------------------------------------------------------------
-        """;
+                --------------------------------------------------------------------
+                *** RELATÓRIO: Quantidade de estornos por responsável da demanda ***
+                --------------------------------------------------------------------
+                """;
         String conteudo = "";
-        for (QtdEstornosPorResponsavel item : relatorio){
-            conteudo += "| ID: " + item.getIdResponsavel() + " | Responsável: " + item.getResponsavel() + " | Qtd. Estornos: " + item.getQtdEstornos() + " |\n";
+        for (QtdEstornosPorResponsavel item : relatorio) {
+            conteudo += "| ID: " + item.getIdResponsavel() + " | Responsável: " + item.getResponsavel()
+                    + " | Qtd. Estornos: " + item.getQtdEstornos() + " |\n";
         }
         String footer = "--------------------------------------------------------------------";
         return cabecalho + conteudo + footer;

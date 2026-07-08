@@ -29,5 +29,10 @@ public class Demanda {
     private Funcionario responsavel;
     private Status status;
 
-    private List<FuncionarioEnvolvido> funcionariosEnvolvidos;
+    /**
+     * Lista de matriculas dos funcionarios envolvidos nesta demanda.
+     * Abordagem de referencia por array (idiomatica no MongoDB para N:N).
+     * Para obter os dados completos, buscar na colecao "funcionarios".
+     */
+    private List<String> matriculasEnvolvidos;
 }

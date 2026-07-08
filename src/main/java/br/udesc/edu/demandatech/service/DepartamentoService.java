@@ -4,13 +4,15 @@ import br.udesc.edu.demandatech.model.dto.criar.DepartamentoCriarDTO;
 import br.udesc.edu.demandatech.model.dto.editar.DepartamentoEditarDTO;
 import br.udesc.edu.demandatech.model.entity.Departamento;
 import br.udesc.edu.demandatech.model.entity.Funcionario;
-import br.udesc.edu.demandatech.model.exception.*;
+import br.udesc.edu.demandatech.model.exception.IdNaoEncontrado;
+import br.udesc.edu.demandatech.model.exception.ItemNaoEncontrado;
+import br.udesc.edu.demandatech.model.exception.PermissaoNegada;
+import br.udesc.edu.demandatech.model.exception.ValidacaoException;
 import br.udesc.edu.demandatech.repository.DepartamentoRepository;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -31,22 +33,18 @@ public class DepartamentoService {
     }
 
     public Departamento criar(DepartamentoCriarDTO departamentoCriarDTO, Funcionario funcionario) {
-        if(!funcionario.getAdmin()) {
-            throw new PermissaoNegada();
-        }
+        if (!funcionario.getAdmin()) throw new PermissaoNegada();
         validar(departamentoCriarDTO);
         Departamento departamento = new Departamento();
         BeanUtils.copyProperties(departamentoCriarDTO, departamento);
         return departamentoRepository.save(departamento);
     }
 
-    public Departamento atualizar(Long id, DepartamentoEditarDTO departamentoEditarDTO, Funcionario funcionario) {
-        if(!funcionario.getAdmin()) {
-            throw new PermissaoNegada();
-        }
+    public Departamento atualizar(String id, DepartamentoEditarDTO departamentoEditarDTO, Funcionario funcionario) {
+        if (!funcionario.getAdmin()) throw new PermissaoNegada();
         validar(departamentoEditarDTO);
         Optional<Departamento> opcionalDepartamento = departamentoRepository.findById(id);
-        if(opcionalDepartamento.isPresent()) {
+        if (opcionalDepartamento.isPresent()) {
             Departamento departamento = opcionalDepartamento.get();
             BeanUtils.copyProperties(departamentoEditarDTO, departamento);
             return departamentoRepository.save(departamento);
@@ -58,33 +56,23 @@ public class DepartamentoService {
         return departamentoRepository.findAll();
     }
 
-    public Departamento buscarPorId(Long id) {
+    public Departamento buscarPorId(String id) {
         Optional<Departamento> opcionalDepartamento = departamentoRepository.findById(id);
-        if(opcionalDepartamento.isPresent()) {
-            return opcionalDepartamento.get();
-        }
+        if (opcionalDepartamento.isPresent()) return opcionalDepartamento.get();
         throw new IdNaoEncontrado("departamento", id);
     }
 
     public Departamento buscarPorName(String descricao) {
         Departamento departamento = departamentoRepository.getDepartamentoByDescricao(descricao);
-        if(departamento != null) {
-            return departamento;
-        }
+        if (departamento != null) return departamento;
         throw new ItemNaoEncontrado(descricao);
     }
 
-    public void removerPorId(Long id, Funcionario funcionario) {
-        if(!funcionario.getAdmin()) {
-            throw new PermissaoNegada();
-        }
+    public void removerPorId(String id, Funcionario funcionario) {
+        if (!funcionario.getAdmin()) throw new PermissaoNegada();
         Optional<Departamento> optionalDepartamento = departamentoRepository.findById(id);
-        if(optionalDepartamento.isPresent()) {
-            try {
-                departamentoRepository.deleteById(id);
-            } catch (DataIntegrityViolationException e) {
-                throw new ReferenciaChaveEstrangeira();
-            }
+        if (optionalDepartamento.isPresent()) {
+            departamentoRepository.deleteById(id);
             return;
         }
         throw new IdNaoEncontrado("departamento", id);
