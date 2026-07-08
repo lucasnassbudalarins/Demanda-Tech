@@ -76,6 +76,11 @@ public class DemandaConsoleView implements CommandLineRunner {
     // TELA DE LOGIN
     // -------------------------------------------------------
     private Funcionario telaLogin() {
+        System.out.println("\n--- DEBUG INFO ---");
+        System.out.println("Total users in DB: " + funcionarioService.buscarTudo().size());
+        funcionarioService.buscarTudo().forEach(f -> System.out.println("User in DB: " + f));
+        System.out.println("------------------\n");
+
         while (true) {
             System.out.println("\n============================================");
             System.out.println("        DEMANDA TECH: Login");
@@ -375,6 +380,7 @@ public class DemandaConsoleView implements CommandLineRunner {
                     case 2 -> demandaService.buscarTudo().forEach(d -> System.out.println(
                             "ID:" + d.getIdDemanda()
                                     + " | " + d.getTitulo()
+                                    + " | Tipo:" + (d.getTipo() != null ? d.getTipo().getDescricao() : "N/A")
                                     + " | Status:" + (d.getStatus() != null ? d.getStatus().getDescricao() : "N/A")
                                     + " | Responsável:"
                                     + (d.getResponsavel() != null ? d.getResponsavel().getNome() : "N/A")));
@@ -386,6 +392,8 @@ public class DemandaConsoleView implements CommandLineRunner {
                                         + "\n| Título: " + d.getTitulo()
                                         + "\n| Descrição: " + d.getDescricao()
                                         + "\n| Data: " + d.getData() + " " + d.getHora()
+                                        + "\n| Tipo: "
+                                        + (d.getTipo() != null ? d.getTipo().getDescricao() : "N/A")
                                         + "\n| Status: "
                                         + (d.getStatus() != null ? d.getStatus().getDescricao() : "N/A")
                                         + "\n| Prioridade: "

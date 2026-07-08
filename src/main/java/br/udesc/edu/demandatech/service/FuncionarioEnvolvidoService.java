@@ -21,7 +21,10 @@ public class FuncionarioEnvolvidoService {
     public void associar(Funcionario funcionario, Demanda demanda) {
         if (demanda.getMatriculasEnvolvidos() == null) {
             demanda.setMatriculasEnvolvidos(new ArrayList<>());
+        } else if (!(demanda.getMatriculasEnvolvidos() instanceof ArrayList)) {
+            demanda.setMatriculasEnvolvidos(new ArrayList<>(demanda.getMatriculasEnvolvidos()));
         }
+        
         if (!demanda.getMatriculasEnvolvidos().contains(funcionario.getMatricula())) {
             demanda.getMatriculasEnvolvidos().add(funcionario.getMatricula());
             demandaRepository.save(demanda);
@@ -47,6 +50,11 @@ public class FuncionarioEnvolvidoService {
                 !demanda.getMatriculasEnvolvidos().contains(funcionario.getMatricula())) {
             throw new RuntimeException("Funcionário não está associado a esta demanda.");
         }
+        
+        if (!(demanda.getMatriculasEnvolvidos() instanceof ArrayList)) {
+            demanda.setMatriculasEnvolvidos(new ArrayList<>(demanda.getMatriculasEnvolvidos()));
+        }
+        
         demanda.getMatriculasEnvolvidos().remove(funcionario.getMatricula());
         demandaRepository.save(demanda);
     }

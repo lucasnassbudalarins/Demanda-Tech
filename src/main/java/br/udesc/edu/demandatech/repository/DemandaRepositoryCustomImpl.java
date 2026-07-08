@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.mongodb.core.aggregation.Fields;
 
 @Repository
 public class DemandaRepositoryCustomImpl implements DemandaRepositoryCustom {
@@ -24,7 +25,7 @@ public class DemandaRepositoryCustomImpl implements DemandaRepositoryCustom {
         public Optional<Funcionario> findFuncionarioComMenosDemandas(String idDepartamento) {
                 Aggregation agg = Aggregation.newAggregation(
                                 Aggregation.match(Criteria.where("tipo.departamento._id").is(idDepartamento)),
-                                Aggregation.group("responsavel.matricula")
+                                Aggregation.group("responsavel._id")
                                                 .first("responsavel").as("funcionario")
                                                 .count().as("totalDemandas"),
                                 Aggregation.sort(Sort.Direction.ASC, "totalDemandas"),
@@ -40,11 +41,14 @@ public class DemandaRepositoryCustomImpl implements DemandaRepositoryCustom {
         public List<QtdDemandasPorDepartamento> relatorioQtdDemandasPorDepartamento() {
                 Aggregation agg = Aggregation.newAggregation(
                                 Aggregation.match(Criteria.where("status.descricao").is("Ativo")),
-                                Aggregation.group("tipo.departamento._id", "tipo.departamento.descricao")
+                                Aggregation.group(Fields.from(
+                                                Fields.field("idDepartamento", "tipo.departamento._id"),
+                                                Fields.field("descricao", "tipo.departamento.descricao")
+                                        ))
                                                 .count().as("qtdDemanda"),
                                 Aggregation.project("qtdDemanda")
-                                                .and("_id.tipo.departamento._id").as("idDepartamento")
-                                                .and("_id.tipo.departamento.descricao").as("departamento"));
+                                                .and("_id.idDepartamento").as("idDepartamento")
+                                                .and("_id.descricao").as("departamento"));
 
                 AggregationResults<QtdDemandasPorDepartamento> results = mongoTemplate.aggregate(agg, "demandas",
                                 QtdDemandasPorDepartamento.class);
@@ -55,7 +59,10 @@ public class DemandaRepositoryCustomImpl implements DemandaRepositoryCustom {
         public List<DezFuncionariosMaisProdutivos> relatorioDezFuncionariosMaisProdutivos() {
                 Aggregation agg = Aggregation.newAggregation(
                                 Aggregation.match(Criteria.where("status.descricao").is("Resolvido")),
-                                Aggregation.group("responsavel.matricula", "responsavel.nome")
+                                Aggregation.group(Fields.from(
+                                                Fields.field("matricula", "responsavel._id"),
+                                                Fields.field("nome", "responsavel.nome")
+                                        ))
                                                 .count().as("qtdDemanda"),
                                 Aggregation.project("qtdDemanda")
                                                 .and("_id.matricula").as("matricula")

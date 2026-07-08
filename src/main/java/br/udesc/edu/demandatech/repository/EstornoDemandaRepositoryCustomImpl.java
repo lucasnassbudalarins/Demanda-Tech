@@ -13,6 +13,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import org.springframework.data.mongodb.core.aggregation.Fields;
 
 @Repository
 public class EstornoDemandaRepositoryCustomImpl implements EstornoDemandaRepositoryCustom {
@@ -33,11 +34,14 @@ public class EstornoDemandaRepositoryCustomImpl implements EstornoDemandaReposit
         @Override
         public List<QtdEstornosPorResponsavel> relatorioQtdEstornosPorResponsavel() {
                 Aggregation agg = Aggregation.newAggregation(
-                                Aggregation.group("demanda.responsavel.matricula", "demanda.responsavel.nome")
+                                Aggregation.group(Fields.from(
+                                                Fields.field("idResponsavel", "demanda.responsavel._id"),
+                                                Fields.field("nome", "demanda.responsavel.nome")
+                                        ))
                                                 .count().as("qtdEstornos"),
                                 Aggregation.project("qtdEstornos")
-                                                .and("_id.demanda.responsavel.matricula").as("idResponsavel")
-                                                .and("_id.demanda.responsavel.nome").as("responsavel"),
+                                                .and("_id.idResponsavel").as("idResponsavel")
+                                                .and("_id.nome").as("responsavel"),
                                 Aggregation.sort(Sort.Direction.DESC, "qtdEstornos"));
 
                 AggregationResults<QtdEstornosPorResponsavel> results = mongoTemplate.aggregate(agg, "estornos",
