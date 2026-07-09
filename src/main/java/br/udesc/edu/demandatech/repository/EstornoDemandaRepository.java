@@ -11,5 +11,5 @@ import java.util.List;
 public interface EstornoDemandaRepository extends MongoRepository<EstornoDemanda, String>,
         EstornoDemandaRepositoryCustom {
 
-    List<EstornoDemanda> findByDemanda(Demanda demanda);
+    List<EstornoDemanda> findByDemandaIdDemanda(String idDemanda);
 }

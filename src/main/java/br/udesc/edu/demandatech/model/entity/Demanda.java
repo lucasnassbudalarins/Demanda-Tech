@@ -3,7 +3,8 @@ package br.udesc.edu.demandatech.model.entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.FieldType;
+import org.springframework.data.mongodb.core.mapping.MongoId;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDate;
@@ -15,7 +16,7 @@ import java.util.List;
 @NoArgsConstructor
 @Data
 public class Demanda {
-    @Id
+    @MongoId(FieldType.STRING)
     private String idDemanda;
 
     private String titulo;

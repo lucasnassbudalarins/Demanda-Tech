@@ -103,7 +103,7 @@ public class DemandaService {
                 throw new PermissaoNegada();
             Demanda demanda = optionalDemanda.get();
             // Remove os estornos associados (documentos separados)
-            estornoDemandaRepository.deleteAll(estornoDemandaRepository.findByDemanda(demanda));
+            estornoDemandaRepository.deleteAll(estornoDemandaRepository.findByDemandaIdDemanda(id));
             // As matriculas envolvidas sao apenas strings dentro da Demanda, removidas automaticamente
             demandaRepository.deleteById(id);
             return;

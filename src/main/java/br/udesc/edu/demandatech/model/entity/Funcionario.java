@@ -4,7 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;    
-import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.FieldType;
+import org.springframework.data.mongodb.core.mapping.MongoId;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "funcionarios")
@@ -13,7 +14,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Data
 @EqualsAndHashCode(exclude = "departamento")
 public class Funcionario {
-    @Id
+    @MongoId(FieldType.STRING)
     private String matricula;
 
     private String nome;

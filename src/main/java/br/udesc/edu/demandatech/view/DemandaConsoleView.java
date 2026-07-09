@@ -25,7 +25,7 @@ public class DemandaConsoleView implements CommandLineRunner {
     private final EstornoDemandaService estornoDemandaService;
     private final FuncionarioEnvolvidoService funcionarioEnvolvidoService;
 
-    private final Scanner scanner = new Scanner(System.in);
+    private final Scanner scanner = new Scanner(System.in, java.nio.charset.StandardCharsets.UTF_8.name());
 
     @Override
     public void run(String... args) {
@@ -76,11 +76,6 @@ public class DemandaConsoleView implements CommandLineRunner {
     // TELA DE LOGIN
     // -------------------------------------------------------
     private Funcionario telaLogin() {
-        System.out.println("\n--- DEBUG INFO ---");
-        System.out.println("Total users in DB: " + funcionarioService.buscarTudo().size());
-        funcionarioService.buscarTudo().forEach(f -> System.out.println("User in DB: " + f));
-        System.out.println("------------------\n");
-
         while (true) {
             System.out.println("\n============================================");
             System.out.println("        DEMANDA TECH: Login");
