@@ -22,8 +22,8 @@ Como o projeto utiliza o **Maven Wrapper**, você não precisa ter o Maven insta
 
 ## 📁 Arquivo de Backup
 
-O arquivo de backup está localiado em `src/main/resources/static/backup_demandas.sql`. Ele foi gerado utilizando o comando `mysqldump` e pode ser restaurado utilizando o comando `mysql`.
-
+O arquivo de backup está localiado em `src/main/resources/static/backup_demandas_mongo.js`. 
+Para inserir ele no seu banco MongoDB é necessário criar uma conexão com o banco, atualizar o aplication.properties - se necessário - e em seguida executar o script no mongoDB Shell.
 ---
 
 ## ⚙️ Como o Sistema Funciona
