@@ -4,6 +4,7 @@ import br.udesc.edu.demandatech.model.dto.relatorio.DezFuncionariosMaisProdutivo
 import br.udesc.edu.demandatech.model.dto.relatorio.QtdDemandasPorDepartamento;
 import br.udesc.edu.demandatech.model.entity.Demanda;
 import br.udesc.edu.demandatech.model.entity.Funcionario;
+import br.udesc.edu.demandatech.model.projection.DemandaProjection;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -61,4 +62,7 @@ public interface DemandaRepository extends JpaRepository<Demanda, Long> {
         LIMIT 10
     """)
     List<DezFuncionariosMaisProdutivos> relatorioDezFuncionariosMaisProdutivos();
+
+    @Override
+    List<DemandaProjection> findAll();
 }

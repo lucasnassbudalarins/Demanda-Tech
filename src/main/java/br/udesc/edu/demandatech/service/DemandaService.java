@@ -11,6 +11,7 @@ import br.udesc.edu.demandatech.model.exception.IdNaoEncontrado;
 import br.udesc.edu.demandatech.model.exception.PermissaoNegada;
 import br.udesc.edu.demandatech.model.exception.SemFuncionarioDisponivel;
 import br.udesc.edu.demandatech.model.exception.ValidacaoException;
+import br.udesc.edu.demandatech.model.projection.DemandaProjection;
 import br.udesc.edu.demandatech.repository.DemandaRepository;
 import br.udesc.edu.demandatech.repository.EstornoDemandaRepository;
 import br.udesc.edu.demandatech.repository.FuncionarioEnvolvidoRepository;
@@ -83,7 +84,7 @@ public class DemandaService {
         throw new IdNaoEncontrado("demandas", id);
     }
 
-    public List<Demanda> buscarTudo(){
+    public List<DemandaProjection> buscarTudo(){
         return demandaRepository.findAll();
     }
 
