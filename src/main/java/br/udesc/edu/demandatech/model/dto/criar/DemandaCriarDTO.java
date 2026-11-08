@@ -1,7 +1,7 @@
 package br.udesc.edu.demandatech.model.dto.criar;
 
 import br.udesc.edu.demandatech.model.entity.Funcionario;
-import br.udesc.edu.demandatech.model.entity.Prioridade;
+import br.udesc.edu.demandatech.model.enumerators.Prioridade;
 import br.udesc.edu.demandatech.model.entity.TipoDemanda;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;

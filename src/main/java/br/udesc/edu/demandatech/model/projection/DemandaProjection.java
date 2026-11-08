@@ -1,9 +1,7 @@
 package br.udesc.edu.demandatech.model.projection;
 
-import br.udesc.edu.demandatech.model.entity.Funcionario;
-import br.udesc.edu.demandatech.model.entity.Prioridade;
-import br.udesc.edu.demandatech.model.entity.Status;
-import br.udesc.edu.demandatech.model.entity.TipoDemanda;
+import br.udesc.edu.demandatech.model.enumerators.Prioridade;
+import br.udesc.edu.demandatech.model.enumerators.Status;
 
 import java.time.LocalDate;
 
@@ -12,7 +10,7 @@ public record DemandaProjection(
     String titulo,
     Status status,
     Prioridade prioridade,
-    TipoDemanda tipo,
-    Funcionario responsavel,
+    String tipo,
+    String responsavel,
     LocalDate data
 ) {}

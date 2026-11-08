@@ -1,5 +1,7 @@
 package br.udesc.edu.demandatech.model.entity;
 
+import br.udesc.edu.demandatech.model.enumerators.Prioridade;
+import br.udesc.edu.demandatech.model.enumerators.Status;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -26,8 +28,8 @@ public class Demanda {
     private LocalTime hora;
     private String descricao;
 
-    @ManyToOne
-    @JoinColumn(name = "id_prioridade")
+    @Enumerated(EnumType.STRING)
+    @Column(name = "prioridade")
     private Prioridade prioridade;
 
     @ManyToOne
@@ -42,7 +44,7 @@ public class Demanda {
     @JoinColumn(name = "responsavel")
     private Funcionario responsavel;
 
-    @ManyToOne
-    @JoinColumn(name = "id_status")
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
     private Status status;
 }

@@ -1,6 +1,6 @@
 package br.udesc.edu.demandatech.model.dto.editar;
 
-import br.udesc.edu.demandatech.model.entity.Prioridade;
+import br.udesc.edu.demandatech.model.enumerators.Prioridade;
 import br.udesc.edu.demandatech.model.entity.TipoDemanda;
 import jakarta.validation.constraints.Size;
 

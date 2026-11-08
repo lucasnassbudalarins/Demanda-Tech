@@ -1,39 +1,50 @@
 package br.udesc.edu.demandatech.controller;
 
 import br.udesc.edu.demandatech.model.dto.criar.DemandaCriarDTO;
+import br.udesc.edu.demandatech.model.entity.Demanda;
+import br.udesc.edu.demandatech.model.enumerators.Prioridade;
+import br.udesc.edu.demandatech.model.enumerators.Status;
 import br.udesc.edu.demandatech.model.projection.DemandaProjection;
 import br.udesc.edu.demandatech.service.DemandaService;
-import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+
+import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
-import java.util.List;
-
-@Controller
+@RestController
 @CrossOrigin("*")
 @AllArgsConstructor
-@NoArgsConstructor
 @RequestMapping("/demanda")
 public class DemandaController {
 
-    private DemandaService demandaService;
+    private final DemandaService demandaService;
 
     @PreAuthorize("isAuthenticated()")
-    @GetMapping("/")
-    public ResponseEntity<List<DemandaProjection>> getAll(   ){
-        try{
-            return ResponseEntity.ok(demandaService.buscarTudo());
-        } catch (Exception e) {
-            return ResponseEntity.notFound().build();
-        }
+    @GetMapping
+    public ResponseEntity<PagedModel<DemandaProjection>> getAll(
+            @RequestParam(required = false) Status status,
+            @RequestParam(required = false) Prioridade prioridade,
+            @RequestParam(required = false) Long idTipo,
+            @PageableDefault(size = 10, sort = {"data", "idDemanda"}, direction = Sort.Direction.DESC)
+            Pageable pageable) {
+        return ResponseEntity.ok(new PagedModel<>(demandaService.buscarTudo(status, prioridade, idTipo, pageable)));
     }
 
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping
+    public ResponseEntity<Demanda> criarDemanda(
+            @RequestBody DemandaCriarDTO demandaDTO) {
+        return ResponseEntity.ok(demandaService.criar(demandaDTO));
+    }
 }

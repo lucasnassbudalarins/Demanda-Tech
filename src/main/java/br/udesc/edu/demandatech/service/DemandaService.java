@@ -7,6 +7,8 @@ import br.udesc.edu.demandatech.model.dto.relatorio.QtdDemandasPorDepartamento;
 import br.udesc.edu.demandatech.model.entity.Demanda;
 import br.udesc.edu.demandatech.model.entity.Funcionario;
 import br.udesc.edu.demandatech.model.entity.FuncionarioEnvolvido;
+import br.udesc.edu.demandatech.model.enumerators.Prioridade;
+import br.udesc.edu.demandatech.model.enumerators.Status;
 import br.udesc.edu.demandatech.model.exception.IdNaoEncontrado;
 import br.udesc.edu.demandatech.model.exception.PermissaoNegada;
 import br.udesc.edu.demandatech.model.exception.SemFuncionarioDisponivel;
@@ -18,6 +20,9 @@ import br.udesc.edu.demandatech.repository.FuncionarioEnvolvidoRepository;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 import lombok.AllArgsConstructor;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,7 +37,6 @@ import java.util.Set;
 @AllArgsConstructor
 public class DemandaService {
     private DemandaRepository demandaRepository;
-    private StatusService statusService;
     private FuncionarioEnvolvidoRepository funcionarioEnvolvidoRepository;
     private EstornoDemandaRepository estornoDemandaRepository;
     private Validator validator;
@@ -57,7 +61,7 @@ public class DemandaService {
         demanda.setData(LocalDate.now());
         demanda.setHora(LocalTime.now());
         demanda.setResponsavel(responsavel.get());
-        demanda.setStatus(statusService.buscarPorId(1L));
+        demanda.setStatus(Status.ABERTA);
 
         demanda = demandaRepository.save(demanda);
 
@@ -84,8 +88,8 @@ public class DemandaService {
         throw new IdNaoEncontrado("demandas", id);
     }
 
-    public List<DemandaProjection> buscarTudo(){
-        return demandaRepository.findAll();
+    public Page<DemandaProjection> buscarTudo(Status status, Prioridade prioridade, Long idTipo, Pageable pageable) {
+        return demandaRepository.listarDemandas(status, prioridade, idTipo, pageable);
     }
 
     public Demanda buscarPorId(Long id){
