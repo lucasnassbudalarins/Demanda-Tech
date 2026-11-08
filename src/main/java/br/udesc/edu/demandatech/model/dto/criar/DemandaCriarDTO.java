@@ -6,6 +6,7 @@ import br.udesc.edu.demandatech.model.entity.TipoDemanda;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -23,5 +24,4 @@ public record DemandaCriarDTO(
     Funcionario criador,
     @NotNull(message = "Campo usuarios envolvidos está vazio")
     List<Funcionario> usuariosEnvolvidos
-)
-{ }
+) { }

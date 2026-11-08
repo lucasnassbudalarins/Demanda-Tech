@@ -4,12 +4,15 @@ import br.udesc.edu.demandatech.model.dto.criar.FuncionarioCriarDTO;
 import br.udesc.edu.demandatech.model.dto.editar.FuncionarioEditarDTO;
 import br.udesc.edu.demandatech.model.entity.Funcionario;
 import br.udesc.edu.demandatech.model.exception.*;
+import br.udesc.edu.demandatech.model.projection.ColaboradorProjection;
 import br.udesc.edu.demandatech.repository.FuncionarioRepository;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -56,8 +59,8 @@ public class FuncionarioService {
         throw new IdNaoEncontrado("funcionário", id);
     }
 
-    public List<Funcionario> buscarTudo(){
-        return funcionarioRepository.findAll();
+    public Page<ColaboradorProjection> buscarTudo() {
+        return funcionarioRepository.listarFuncionarios();
     }
 
     public Funcionario buscarPorId(Long id){

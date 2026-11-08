@@ -65,30 +65,30 @@ public interface DemandaRepository extends JpaRepository<Demanda, Long> {
     """)
     List<DezFuncionariosMaisProdutivos> relatorioDezFuncionariosMaisProdutivos();
 
-@Query(value = """
-        SELECT
-            new br.udesc.edu.demandatech.model.projection.DemandaProjection(
-                d.idDemanda, d.titulo, d.status, d.prioridade, t.descricao, r.nome, d.data
-            )
-        FROM Demanda d
-        JOIN d.tipo t
-        LEFT JOIN d.responsavel r
-        WHERE (:status IS NULL OR d.status = :status)
-          AND (:prioridade IS NULL OR d.prioridade = :prioridade)
-          AND (:idTipo IS NULL OR t.idTipo = :idTipo)
-    """,
-    countQuery = """
-        SELECT COUNT(d)
-        FROM Demanda d
-        JOIN d.tipo t
-        WHERE (:status IS NULL OR d.status = :status)
-          AND (:prioridade IS NULL OR d.prioridade = :prioridade)
-          AND (:idTipo IS NULL OR t.idTipo = :idTipo)
-    """)
-Page<DemandaProjection> listarDemandas(
-    @Param("status") Status status,
-    @Param("prioridade") Prioridade prioridade,
-    @Param("idTipo") Long idTipo,
-    Pageable pageable
-);
+    @Query(value = """
+            SELECT
+                new br.udesc.edu.demandatech.model.projection.DemandaProjection(
+                    d.idDemanda, d.titulo, d.status, d.prioridade, t.descricao, r.nome, d.data
+                )
+            FROM Demanda d
+            JOIN d.tipo t
+            LEFT JOIN d.responsavel r
+            WHERE (:status IS NULL OR d.status = :status)
+              AND (:prioridade IS NULL OR d.prioridade = :prioridade)
+              AND (:idTipo IS NULL OR t.idTipo = :idTipo)
+        """,
+        countQuery = """
+            SELECT COUNT(d)
+            FROM Demanda d
+            JOIN d.tipo t
+            WHERE (:status IS NULL OR d.status = :status)
+              AND (:prioridade IS NULL OR d.prioridade = :prioridade)
+              AND (:idTipo IS NULL OR t.idTipo = :idTipo)
+        """)
+    Page<DemandaProjection> listarDemandas(
+        @Param("status") Status status,
+        @Param("prioridade") Prioridade prioridade,
+        @Param("idTipo") Long idTipo,
+        Pageable pageable
+    );
 }
